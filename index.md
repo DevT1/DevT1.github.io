@@ -1,22 +1,25 @@
-# Hello this is going to be my website for ECE 4160 Fast Robots.
-## It is currently under construction and will be in a much better state as the course moves along.
-
-### Lab1
-*Coming into the first lab we are tasked with intializing .... and getting familiar with using the Arduino IDE for coding the microcontroller for the course, sending and receiving messages over USB, and using the onboard temperature and microphone sensors.*
-## Material List:
-1.) Artiemis Nano
-2.)USB-A to USB-C cable
-###
-<div class="content">
-    <section>
-        <h2>Projects</h2>
-        <p>Details about my projects.</p>
-    </section>
-    <section>
-        <h2>Contact</h2>
-        <p>How to reach me.</p>
-    </section>
-</div>
-#### Lab1A
-#### Lab1B
-### Lab2
+<html lang = "en"> 
+<head>
+    <title>ECE 4160 Lab Projects</title>
+    <p>INSERT PIC, Devon Thomas</p>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href = "index.md"></a>Home Page</li>
+            <li><a href = "lab1.html"></a>Lab 1 Page</li>
+            <li><a href = "lab1.html"></a>Lab 2 Page</li>
+        </ul>
+    </nav>
+    <h1>
+        My Lab projects while taking ECE 4160
+    </h1>
+    <p>
+        Hello! Welcome to my lab projects page. You can click on any of the above buttons in the navigation to move between different pages. 
+    </p>
+    <p>While you're here you can look through the lower sections to learn more about my self</p>
+    <h2>ABOUT ME</h2>
+    <p>INSERT SMALL INTRO</p>
+    
+</body>
+</html>
