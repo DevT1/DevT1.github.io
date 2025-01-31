@@ -1,0 +1,48 @@
+/* Inherit styles from main file, but override alignment */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    text-align: left; /* Left-align all text */
+}
+
+/* Keep navigation centered */
+nav {
+    background-color: #e0f7fa;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+nav ul li a:hover {
+    background-color: #555;
+}
+
+/* Ensure headings and paragraphs are left-aligned */
+h1, h2, p, ul {
+    text-align: left;
+    margin-left: 20px; /* Add some left margin for better readability */
+}
+
+/* Style list items properly */
+ul {
+    padding-left: 40px;
+}
