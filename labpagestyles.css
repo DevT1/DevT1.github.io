@@ -12,18 +12,20 @@ nav ul {
     padding: 0;
 }
 
-/* Style navbar links */
+/* Fix list items so they properly contain links */
 nav ul li {
-    display: inline;
+    display: inline-block; /* Use inline-block to ensure links align correctly */
     margin: 0 15px;
 }
 
+/* Style navbar links */
 nav ul li a {
-    color: white;
+    color: white; /* Fix: Ensures the text color is white */
     text-decoration: none;
     font-size: 18px;
     padding: 8px 15px;
     border-radius: 5px;
+    display: inline-block; /* Fix: Ensures the interactive area wraps around the text */
 }
 
 /* Hover effect */
