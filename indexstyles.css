@@ -1,8 +1,8 @@
 /* Style the navigation bar */
 nav {
-    background-color: #f4f4f4; /* Dark background */
+    background-color: #001f3f; /* Dark background */
     padding: 10px 0;
-    text-align: center;
+    text-align: left;
 }
 
 /* Style the navbar list */
