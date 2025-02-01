@@ -28,7 +28,7 @@ nav ul li a {
 
 /* Center image and caption */
 .profile {
-    text-align: center;
+    text-align: right;
     margin-top: 20px;
 }
 
@@ -48,7 +48,7 @@ nav ul li a {
 }
 /* Hover effect */
 nav ul li a:hover {
-    background-color: #555;
+    background-color: #e0f7fa;
 }
 
 /* Add some padding to the page content */
