@@ -1,6 +1,6 @@
 /* Style the navigation bar */
 nav {
-    background-color: #e0f7fa; /* Dark background */
+    background-color: #f4f4f4; /* Dark background */
     padding: 10px 0;
     text-align: left;
 }
@@ -48,7 +48,7 @@ nav ul li a {
 }
 /* Hover effect */
 nav ul li a:hover {
-    background-color: #e0f7fa;
+    background-color: #555;
 }
 
 /* Add some padding to the page content */
