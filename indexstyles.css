@@ -2,7 +2,7 @@
 nav {
     background-color: #f4f4f4; /* Dark background */
     padding: 10px 0;
-    text-align: left;
+    text-align: center;
 }
 
 /* Style the navbar list */
@@ -28,7 +28,7 @@ nav ul li a {
 
 /* Center image and caption */
 .profile {
-    text-align: right;
+    text-align: left;
     margin-top: 20px;
 }
 
@@ -48,7 +48,7 @@ nav ul li a {
 }
 /* Hover effect */
 nav ul li a:hover {
-    background-color: #555;
+    background-color: #5555;
 }
 
 /* Add some padding to the page content */
