@@ -26,6 +26,26 @@ nav ul li a {
     border-radius: 5px;
 }
 
+/* Center image and caption */
+.profile {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Ensure the image is responsive */
+.profile img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Style the caption */
+.profile .caption {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
 /* Hover effect */
 nav ul li a:hover {
     background-color: #555;
