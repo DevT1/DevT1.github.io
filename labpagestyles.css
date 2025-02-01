@@ -1,6 +1,6 @@
 /* Style the navigation bar */
 nav {
-    background-color: #001f3f; /* Dark background */
+    background-color: #001f3f; /* Dark Blue */
     padding: 10px 0;
     text-align: center;
 }
@@ -14,23 +14,23 @@ nav ul {
 
 /* Fix list items so they properly contain links */
 nav ul li {
-    display: inline-block; /* Use inline-block to ensure links align correctly */
+    display: inline-block; /* Ensures proper spacing */
     margin: 0 15px;
 }
 
-/* Style navbar links */
+/* Fix: Ensure navbar text is white */
 nav ul li a {
-    color: white; /* Fix: Ensures the text color is white */
+    color: white !important; /* Ensures visibility against dark background */
     text-decoration: none;
     font-size: 18px;
     padding: 8px 15px;
     border-radius: 5px;
-    display: inline-block; /* Fix: Ensures the interactive area wraps around the text */
+    display: inline-block; /* Ensures clickable area wraps text */
 }
 
 /* Hover effect */
 nav ul li a:hover {
-    background-color: #555;
+    background-color: #004080; /* Lighter blue for hover */
 }
 
 /* Add some padding to the page content */
