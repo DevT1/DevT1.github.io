@@ -85,8 +85,19 @@
     <h2>
         Part 1
     </h2>
-    <p>INSERT VIDEO</p>
-    <p></p>
+    <p>I burned the Arduino ble file onto the Artemis board causing the mac address needed to connect to it to be printed into the serial monitor.</p>
+    <img src="images for website/Lab1B_Mac_Addr.png" width="650" height="400" alt="Mac address Example">
+    
+    <p>From there I needed to update the mac address in the connections file on jupyter lab and you can see in the picture below that I changed the address so that
+        the address on both files match.</p>
+    <img src="images for website/Lab1B_connection_file.png" width="650" height="400" alt="connections file">
+
+    <p>After that I had to generate a UUID that would be unqiue to my board. If I did not do this, there is a high likely chance I would connect to a classmate's Artemis board.</p>
+    <img src="images for website/Lab1B_UUID_Match.png" width="650" height="400" alt="UUID matching">
+    
+    <p>Finally this lead to checking if the board was capable of connecting to my laptop through jupyter lab. If done successfully there would be a 
+    statment printed that the board is now connected. If not then there will be a statment printed that it is still attempting to connect.</p>
+    <img src="images for website/Lab1B_Artemis_connects.png" width="650" height="400" alt="Board connects">
     
     <h2>
         Part 2
