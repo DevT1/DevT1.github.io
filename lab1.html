@@ -115,38 +115,66 @@
     <h2>
         SEND_THREE_FLOATS Command
     </h2>
-    <p>INSERT VIDEO</p>
-    <p></p>
+    <p>
+        The purpose of this command is to be able to send data like floats to the board through strings and be able to extract 3 floats out
+        of the string being sent to the board. Being able to send floats over bluetooth can be helpful in debugging to ensure that the connection between the board
+        and my laptop is stable. As shown below that show the code used to implement the logic for this command.
+    </p>
+    <img src="images for website/Lab1B_SEND_THREE_FLOATS_code.png" width="650" height="400" alt="Send three floats code">
+    <img src="images for website/Lab1B_SEND_THREE_FLOATS_python.png" width="650" height="400" alt="Send three floats cmnd">
+    <img src="images for website/Lab1B_Echo_Command_in_Serial.png" width="650" height="400" alt="Send three floats in Arduino cmnd">
+    
         
     <h2>
         GET_TIME_MILLIS Command
     </h2>
-    <p>INSERT VIDEO</p>
-    <p></p>
+    <p>
+        The purpose of this command is to take advantage of the built-in timer on the Artemis board. Being able to recieve the current time in milliseconds is an odvious advantage
+        when it comed to debugging espcially if it seems that a bug is time related. My implementation of this command and what is returned is seen below. 
+    </p>
+    <img src="images for website/Lab1B_SEND_GET_TIME_MILLIS_code.png" width="650" height="400" alt="Get time in milliseconds code">
+    <img src="images for website/Lab1B_SEND_GET_TIME_MILLIS_python.png" width="650" height="400" alt="Get time in milliseconds cmd">
 
     <h2>
         Notification Handler
     </h2>
-    <p>INSERT VIDEO</p>
-    <p></p>
+    <p>
+        The purpose of this section of the lab is to be able to create a function that handles when data is being sent from the Artemis board to the laptop. When messages are
+        being sent from the board to the laptop this handler will extract the needed data and display the data in a slightly different way. The implemenation of the 
+        handler and how to initate the notifications are shown below:
+    </p>
+     <img src="images for website/Lab1B_Notification_Handler.png" width="650" height="400" alt="notification handler code">
 
     <h2>
         GET_LOOP_OF_TIME command
     </h2>
-    <p>INSERT VIDEO</p>
-    <p></p>
+    <p>
+        The purpose of this command is to be able to time stamps repeatedly to my laptop. I can see how this will help when debugging fast amounts of data. The implemenatation
+        and result can be seen below:
+    </p>
+    <img src="images for website/Lab1B_TIME_LOOP_code.png" width="650" height="400" alt="loop of time code">
+    <img src="images for website/Lab1B_TIME_LOOP_python.png" width="650" height="400" alt="loop of time python">
 
     <h2>
         SEND_TIME_DATA Command
     </h2>
-    <p>INSERT VIDEO</p>
-    <p></p>
+    <p>
+        The purpose of this command is to be able to send data by populating an array in the arduino sketch the send each indiviual element in the array over 
+        bluetooth. This seems to be a way of seeing how fast and how much data can be sent over bluetooth. The implemenation and result can be see below:
+    </p>
+    <img src="images for website/Lab1B_SEND_TIME_DATA_code.png" width="650" height="400" alt="sent data code">
+    <img src="images for website/Lab1B_SEND_TIME_DATA_python.pn" width="650" height="400" alt="sent data python">
+
 
     <h2>
         GET_TEMP_READINGS 
     </h2>
-    <p>INSERT VIDEO</p>
-    <p></p>
+    <p>
+        The purpose of this command is to be able to gather temperature readings concurrently with its respective time stamp. This seems like a baseline framework for
+        future debugging when sending commands over bluetooth and seeing at what time stamp it might fail. The implemenation and result can be see below:
+    </p>
+    <img src="images for website/Lab1B_GET_TEMP_READINGS_code.png" width="650" height="400" alt="Temp readings code">
+    <img src="images for website/Lab1B_GET_TEMP_READINGS_python.png" width="650" height="400" alt="Temp readings python">
 
     <h1>
       Lab 1B Conclusion
