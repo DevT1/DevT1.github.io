@@ -40,7 +40,7 @@
     <ul>
         <li>
             I gathered the accelerometer data with pitch and roll using these equations.
-            <img src="images for website/lab2/lab2_Pitch_acc_eqs.png" width="650" height="400" alt="Acc Eqs">
+            <img src="images for website/lab 2/lab2_Pitch_acc_eqs.png" width="650" height="400" alt="Acc Eqs">
         </li>
         
         <li>
@@ -48,24 +48,24 @@
         </li>
         <li>
             Roll:
-             <img src="images for website/lab2/lab2_Roll_0-(-90).png" width="650" height="400" alt="Roll for -90 to 0">
-             <img src="images for website/lab2/lab2_Roll_0-(90).png" width="650" height="400" alt="Roll for 0 to 90">
+             <img src="images for website/lab 2/lab2_Roll_0-(-90).png" width="650" height="400" alt="Roll for -90 to 0">
+             <img src="images for website/lab 2/lab2_Roll_0-(90).png" width="650" height="400" alt="Roll for 0 to 90">
         </li>
         <li>
             Pitch:
-             <img src="images for website/lab2/lab2_Pitch_0-(-90).png" width="650" height="400" alt="Pitch for -90 to 0">
-             <img src="images for website/lab2/lab2_Pitch_0-(90).png" width="650" height="400" alt="Pitch for 0 to 90">
+             <img src="images for website/lab 2/lab2_Pitch_0-(-90).png" width="650" height="400" alt="Pitch for -90 to 0">
+             <img src="images for website/lab 2/lab2_Pitch_0-(90).png" width="650" height="400" alt="Pitch for 0 to 90">
         </li>
         
         <li>As you can see in these pictures the accelerometer is very noisy. This lead me to taking a FFT of the data to gather a good cutoff
         frequency would be for the data. The FFT taken is shown below:</li>
-         <img src="images for website/lab2/Lab2_Roll_FFT.png" width="650" height="400" alt="Roll FFT">
+         <img src="images for website/lab 2/Lab2_Roll_FFT.png" width="650" height="400" alt="Roll FFT">
         <li>I also took an FFT of what the output would look like if I banged on the table continously:</li>
-        <img src="images for website/lab2/Lab2_Roll_FFT_Banging_on_Table.png" width="650" height="400" alt="Roll FFT with banging">
+        <img src="images for website/lab 2/Lab2_Roll_FFT_Banging_on_Table.png" width="650" height="400" alt="Roll FFT with banging">
         <li>After taking the FFT I was able to see that a cutoff between 5-10hz should be sufficent in filtering out the higher frequncy noise. This lead to a low pass filter that'
         produced that was produced by these equations and produced this image even with noise induced into the data:</li>
-        <img src="images for website/lab2/lab2_roll_pitch_eqs.png" width="650" height="400" alt="Roll LP">
-        <img src="images for website/lab2/lab2_Roll_LP.png" width="650" height="400" alt="Roll LP">
+        <img src="images for website/lab 2/lab2_roll_pitch_eqs.png" width="650" height="400" alt="Roll LP">
+        <img src="images for website/lab 2/lab2_Roll_LP.png" width="650" height="400" alt="Roll LP">
         
     </ul>
     
