@@ -1,25 +1,100 @@
-<html lang = "en"> 
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab 2</title>
+    <title>FastRobots 2025 - Lab 2: IMU</title>
     <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
 </head>
 <body>
     <nav>
         <ul>
-            <li><a href = "index.html">Home Page</a></li>
-            <li><a href = "lab1.html">Lab 1 Page</a></li>
-            <li><a href = "lab2.html">Lab 2 Page</a></li>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="lab1.html">Lab 1 Page</a></li>
+            <li><a href="lab2.html">Lab 2 Page</a></li>
         </ul>
     </nav>
-    <h1>
-      Lab 2: IMU
-    </h1>
-    <p>
-        Content for lab2
-    </p>
-   
+    
+    <h1>Lab 2: IMU</h1>
+    
+    <h2>Objective</h2>
+    <p>The purpose of this lab is to integrate an IMU into the robot, transition to battery-powered operation, and record a stunt with the RC robot.</p>
+    
+    <h2>Parts Required</h2>
+    <ul>
+        <li>1 x SparkFun RedBoard Artemis Nano</li>
+        <li>1 x USB cable</li>
+        <li>1 x 9DOF IMU sensor</li>
+        <li>1 x Force1 RC car</li>
+        <li>1 x Li-Ion 3.7V 850mAh battery</li>
+    </ul>
+    
+    <h2>Instructions</h2>
+    <h3>Setup the IMU</h3>
+    <ul>
+        <li>Install the “SparkFun 9DOF IMU Breakout_ICM 20948_Arduino Library” from the Arduino Library Manager.</li>
+        <li>Connect the IMU to the Artemis board using the QWIIC connectors.</li>
+        <li>Run the example program and analyze sensor output.</li>
+    </ul>
+    
+    <h3>Accelerometer</h3>
+    <ul>
+        <li>
+            I gathered the accelerometer data with pitch and roll using these equations.
+            <img src="images for website/lab2/lab2_Pitch_acc_eqs.png" width="650" height="400" alt="Acc Eqs">
+        </li>
+        
+        <li>
+            This allowed me to get outputs from -90 to 0 and 0 to 90 degrees for both the pitch and roll.
+        </li>
+        <li>
+            Roll:
+             <img src="images for website/lab2/lab2_Roll_0-(-90).png" width="650" height="400" alt="Roll for -90 to 0">
+             <img src="images for website/lab2/lab2_Roll_0-(90).png" width="650" height="400" alt="Roll for 0 to 90">
+        </li>
+        <li>
+            Pitch:
+             <img src="images for website/lab2/lab2_Pitch_0-(-90).png" width="650" height="400" alt="Pitch for -90 to 0">
+             <img src="images for website/lab2/lab2_Pitch_0-(90).png" width="650" height="400" alt="Pitch for 0 to 90">
+        </li>
+        
+        <li>As you can see in these pictures the accelerometer is very noisy. This lead me to taking a FFT of the data to gather a good cutoff
+        frequency would be for the data. The FFT taken is shown below:</li>
+         <img src="images for website/lab2/Lab2_Roll_FFT.png" width="650" height="400" alt="Roll FFT">
+        <li>I also took an FFT of what the output would look like if I banged on the table continously:</li>
+        <img src="images for website/lab2/Lab2_Roll_FFT_Banging_on_Table.png" width="650" height="400" alt="Roll FFT with banging">
+        <li>After taking the FFT I was able to see that a cutoff between 5-10hz should be sufficent in filtering out the higher frequncy noise. This lead to a low pass filter that'
+        produced that was produced by these equations and produced this image even with noise induced into the data:</li>
+        <img src="images for website/lab2/lab2_roll_pitch_eqs.png" width="650" height="400" alt="Roll LP">
+        <img src="images for website/lab2/lab2_Roll_LP.png" width="650" height="400" alt="Roll LP">
+        
+    </ul>
+    
+    <h3>Gyroscope</h3>
+    <ul>
+        <li>Compute pitch, roll, and yaw from gyroscope data.</li>
+        <li>Compare filtered accelerometer and gyroscope results.</li>
+        <li>Implement a complementary filter for stable angle estimation.</li>
+    </ul>
+    
+    <h3>Sample Data</h3>
+    <ul>
+        <li>Optimize main loop execution speed.</li>
+        <li>Store time-stamped IMU data efficiently.</li>
+        <li>Demonstrate at least 5 seconds of IMU data transmission via Bluetooth.</li>
+    </ul>
+    
+    <h3>Record a Stunt</h3>
+    <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/Olwqv5O0ZJ8?" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
+    <p>To conclude this lab I was able to drive the small RC car before modifcations would be made internally with new hardware.
+    When using the toy I noticed that at a certain speed the car would drift in one direction and that more complex
+    movement was hard to pull off. It did take some adjusting before it felt that I had control the toy.
+    Note: Since this video is a first person FOV I am using one hand to steer the toy so sorry for the bad control of the toy.</p>
     
 </body>
 </html>
