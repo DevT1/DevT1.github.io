@@ -31,9 +31,23 @@
     <h2>Instructions</h2>
     <h3>Setup the IMU</h3>
     <ul>
-        <li>Install the “SparkFun 9DOF IMU Breakout_ICM 20948_Arduino Library” from the Arduino Library Manager.</li>
-        <li>Connect the IMU to the Artemis board using the QWIIC connectors.</li>
-        <li>Run the example program and analyze sensor output.</li>
+        <li>Installed the “SparkFun 9DOF IMU Breakout_ICM 20948_Arduino Library” from the Arduino Library Manager.</li>
+        <li>Connected the IMU to the Artemis board using the QWIIC connectors.</li>
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/zCbp4-KrQWU?" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+        </iframe>
+        <li>Ran the example program and analyze sensor output.</li>
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/Vpyt8IifvYU" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+        </iframe>
     </ul>
     
     <h3>Accelerometer</h3>
@@ -49,12 +63,12 @@
         <li>
             Roll:
              <img src="images for website/lab 2/lab2_Roll_0-(-90).png" width="650" height="400" alt="Roll for -90 to 0">
-             <img src="images for website/lab 2/lab2_Roll_0-(90).png" width="650" height="400" alt="Roll for 0 to 90">
+             <img src="images for website/lab 2/lab2_Roll_0-90.png" width="650" height="400" alt="Roll for 0 to 90">
         </li>
         <li>
             Pitch:
              <img src="images for website/lab 2/lab2_Pitch_0-(-90).png" width="650" height="400" alt="Pitch for -90 to 0">
-             <img src="images for website/lab 2/lab2_Pitch_0-(90).png" width="650" height="400" alt="Pitch for 0 to 90">
+             <img src="images for website/lab 2/lab2_Pitch_0-90.png" width="650" height="400" alt="Pitch for 0 to 90">
         </li>
         
         <li>As you can see in these pictures the accelerometer is very noisy. This lead me to taking a FFT of the data to gather a good cutoff
@@ -71,16 +85,35 @@
     
     <h3>Gyroscope</h3>
     <ul>
-        <li>Compute pitch, roll, and yaw from gyroscope data.</li>
-        <li>Compare filtered accelerometer and gyroscope results.</li>
-        <li>Implement a complementary filter for stable angle estimation.</li>
+        <li>To comwback the noisiness of the accelermeter I used a gryoscope which is less noisy and finds absolute angles since it measures angular change. The equations
+            used for the gyroscope were:
+        </li>
+        <img src="images for website/lab 2/lab2_gyro_roll_Pitch_eqs.png" width="650" height="400" alt="gyro eqs">
+        <li>These equations produced this gyroscope plot</li>
+        <img src="images for website/lab 2/lab2_gyro_plot.png" width="650" height="400" alt="gyro plot">
+        <li>As you can see the gyroscope is far less noisy than the accelerometer but also as you can see it became sensivity to drift.</li>
+        <li>Due to the advantages balancing out the disadvangtes of the accelerometer and gyroscope I created a complementary filter that took full advantage of the strengths
+        of both devices.</li>
+        <li>The equations used to create the filter is shown here:</li>
+        <img src="images for website/lab 2/lab2_compfilter_eqs.png" width="650" height="400" alt="comp filter eqs">
+        <li>Finally the plot produced by the filter is here:</li>
+        < </iframe>
+        <li>Ran the example program and analyze sensor output.</li>
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/iCo_ft4sNCM?" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+        </iframe>
     </ul>
     
     <h3>Sample Data</h3>
     <ul>
-        <li>Optimize main loop execution speed.</li>
-        <li>Store time-stamped IMU data efficiently.</li>
-        <li>Demonstrate at least 5 seconds of IMU data transmission via Bluetooth.</li>
+        <li>Within the interest of making the deadline I will be writing out this section and adding the proper images after the deadline</li>
+        <li>I took out all of the serial prints I was using for debugging and only used the dataready() flag to know when and when not to send data.</li>
+        <li>I did place the pitch and roll for each device and the complementary filter in one string and sent it back over bluetooth to be process
+        in python and it seemed to be noticably faster.</li>
     </ul>
     
     <h3>Record a Stunt</h3>
