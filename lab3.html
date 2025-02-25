@@ -1,0 +1,119 @@
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastRobots 2025 - Lab 3: Time-of-Flight Sensors</title>
+    <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="lab2.html">Lab 2 Page</a></li>
+            <li><a href="lab3.html">Lab 3 Page</a></li>
+        </ul>
+    </nav>
+    
+    <h1>Lab 3: Time of Flight Sensors</h1>
+    <h2>Objective</h2>
+    <p>The purpose of this lab is to be able to use time of flight sesnors on the robot.Gaining an understanding of these sensors are integral to being able to let the robot drive at faster speeds.</p>
+      
+      <h2>Material List</h2>
+      <ul>
+          <li>1 x SparkFun RedBoard Artemis Nano</li>
+          <li>1 x USB cable</li>
+          <li>1 x 9DOF IMU sensor</li>
+          <li>2 x 4m ToF sensor</li>
+          <li>1 x QWIIC Breakout board</li>
+          <li>3 x Qwiic connector</li>
+          <li>1 x 650mAh battery from the RC car</li>
+          <li>1 x Ruler or graph paper</li>
+          <li>1 x Wire strippers/ Mini cutters</li>
+          <li>1 x Soldering iron</li>
+      </ul>
+    
+    <h2>Prelab</h2>
+    <ul>
+        <p>As stated in the objective this lab's main focus will be on intergrating 2 time of flight sensors into our setup from lab 1 and 2.There is an issue with using these two sensors and it is centered around the 
+          addresses of both devices. To use I2C with these devices at the same time at least one of the devices has to be a different address from the other. Since this is something that is programmable and has shut diwn
+          pins there are two approaches to this problem. The first one and the one I tried was simply changing the address of both sensors. When I conducted this approach I repeatedly encountered an issue with
+          being able to read in data from one or both of the sensors. I was not able to find the root cause of this error and instead fully implemented the approach using a shutdown pin. This appoarch allows for a 
+          simplier and quick implementation that only need just a few more lines of code than th reading distance example given during the lab. In the end using the shutdown pin and changing one of the sensor's addresses allowed for me to fully
+          complete the lab.</p>
+        <p>Additionally I needed to think about where to put my time of flight(TOF) sensors on my robot. I decided that having one sensor in the front and one sensor would be better. During a later lab every student will
+        be tasked with mapping out their surroundings with their robot and this approach would work well for that. The main drawback to this approach is being totally blind to the left and right of the robot. This might make it harder
+        to conduct object avoindace since the robot will have two potentially huge blinbd spots. A diagram of where I plan to place the TOF sensors is shown below: </p>
+
+      <p>INSERT WIRING DIAGRAM</p>
+        <img src="images/lab3/wiring_diagram.png" width="650" height="400" alt="Wiring Diagram">
+    </ul>
+    
+    <h2>Lab Tasks</h2>
+    
+    <h3>Sensor Setup</h3>
+    <p>The sensor setup was pretty simple. I disconnected one end of a qwiic cable and sodered each wire to the corresponding hole on the TOF sensor. You can find a picture of the TOF sensors connected to a 
+    qwiic breakout below:</p>
+    <ul>
+        <li>Connected the ToF sensor to the QWIIC breakout board.</li>
+        <img src="images/lab3/tof_sensor_setup.png" width="650" height="400" alt="ToF Sensor Setup">
+      
+        <li>Screenshot of Artemis scanning for I2C devices:</li>
+        <img src="images/lab3/i2c_scan.png" width="650" height="400" alt="I2C Scan">
+        <li>The detected I2C address was confirmed, ensuring proper communication.</li>
+    </ul>
+    <p>After connectinbg the sensors to the breakout, a I2C sweep was done on the breakout to make sure that the sensors are working and that it is displaying an address that makes sense. A picture of the sweep can be 
+    found here:</p>
+
+    <p>INSERT I2C sweep pic</p>
+  
+    <h3>Sensor Data Collection</h3>
+    <ul>
+        <li>Discussion and pictures of sensor data with chosen mode:</li>
+        <p>The TOF sensors come with 3 premade functions that change the range of what the sensors can see. The 3 functioncs are  .setDistanceModeShort(), .setDistanceModeMedium(), and .setDistanceModeLong(). With each distance mode getting longer the better 
+        the better the quaility of the data but the sampling rate if you were to increase the distance mode will drop causing the readings to be better. With that in mind and the max distance for the mode of the robot I chose 
+        .setDistanceModeShort(). Since the max distance is within an acceptable range and we need to keep the vechile moving a at fast past at a later point, it made sense to use the short distance mode. A graph that shows the data I 
+          gathered using this mode is shown below:r</p>
+      <p>INSERT GRAPH</p>
+        <img src="images/lab3/sensor_data.png" width="650" height="400" alt="Sensor Data Output">
+    </ul>
+    
+    <h3>Using Two ToF Sensors</h3>
+        <p>I was able to use two TOF sensors at the same time. A video is shown of when I was able to do it. Note: I have a friend moving his hand infornt of the TOF sensors but he did not want to be filmed so that 
+          is why what is moving infront of the sensors is not shown.</p>
+        <p>INSERT VIDEO</p>
+        <img src="images/lab3/two_sensors.png" width="650" height="400" alt="Two ToF Sensors">
+    
+    <h3>ToF Sensor Speed</h3>
+    <ul>
+        <li>Discussed the speed of ToF sensors and limiting factors, such as processing delay and I2C communication.</li>
+        <li>Code snippet for optimizing sensor speed:</li>
+        <pre>
+        while (1) {
+            if (sensor1.dataReady() && sensor2.dataReady()) {
+                distance1 = sensor1.getDistance();
+                distance2 = sensor2.getDistance();
+                sendData(distance1, distance2);
+            }
+        }
+        </pre>
+    </ul>
+    <h3>Time vs Distance</h3>
+    <ul>
+        <li>Graph of distance data sent over Bluetooth:</li>
+        <img src="images/lab3/time_vs_distance.png" width="650" height="400" alt="Time vs Distance Graph">
+    </ul>
+    
+    <h3>Time vs Angle</h3>
+    <ul>
+        <li>Graph of angle data sent over Bluetooth:</li>
+        <img src="images/lab3/time_vs_angle.png" width="650" height="400" alt="Time vs Angle Graph">
+    </ul>
+
+  <p>NOTE: The IMU and TOF sesnors were not moved when the data was gathered so what you are seeing is just the data of it sitting still.</p>
+
+  <h2>Conclusion</h2>
+  <p>This lab was able to allow me to become familir with soldering and empahize a focus on accuarcy and precision. It is clear that more of the tuning and filitering will come later since I imagine we will be introduced
+  to cleaner and simipler ways of extracting the data.</p>
+    
+</body>
+</html>
