@@ -43,9 +43,7 @@
         <p>Additionally I needed to think about where to put my time of flight(TOF) sensors on my robot. I decided that having one sensor in the front and one sensor would be better. During a later lab every student will
         be tasked with mapping out their surroundings with their robot and this approach would work well for that. The main drawback to this approach is being totally blind to the left and right of the robot. This might make it harder
         to conduct object avoindace since the robot will have two potentially huge blinbd spots. A diagram of where I plan to place the TOF sensors is shown below: </p>
-
-      <p>INSERT WIRING DIAGRAM</p>
-        <img src="images/lab3/wiring_diagram.png" width="650" height="400" alt="Wiring Diagram">
+        <img src="images for website/lab3/Note Feb 25, 2025.pdf" width="650" height="400" alt="Wiring Diagram">
     </ul>
     
     <h2>Lab Tasks</h2>
@@ -55,17 +53,17 @@
     qwiic breakout below:</p>
     <ul>
         <li>Connected the ToF sensor to the QWIIC breakout board.</li>
-        <img src="images/lab3/tof_sensor_setup.png" width="650" height="400" alt="ToF Sensor Setup">
-      
-        <li>Screenshot of Artemis scanning for I2C devices:</li>
-        <img src="images/lab3/i2c_scan.png" width="650" height="400" alt="I2C Scan">
-        <li>The detected I2C address was confirmed, ensuring proper communication.</li>
+        <img src="images for website/lab3/ECE4160_lab3_qwiic_setup.jpg" width="650" height="400" alt="ToF Sensor Setup">
     </ul>
     <p>After connectinbg the sensors to the breakout, a I2C sweep was done on the breakout to make sure that the sensors are working and that it is displaying an address that makes sense. A picture of the sweep can be 
     found here:</p>
 
-    <p>INSERT I2C sweep pic</p>
-  
+    <ul>
+    <li>Screenshot of Artemis scanning for I2C devices:</li>
+        <img src="images for website/lab3/ECE4160_lab3_i2c_scan.png" width="650" height="400" alt="I2C Scan">
+        <li>The detected I2C address was confirmed, ensuring proper communication.</li>
+    </ul>
+    
     <h3>Sensor Data Collection</h3>
     <ul>
         <li>Discussion and pictures of sensor data with chosen mode:</li>
@@ -73,8 +71,7 @@
         the better the quaility of the data but the sampling rate if you were to increase the distance mode will drop causing the readings to be better. With that in mind and the max distance for the mode of the robot I chose 
         .setDistanceModeShort(). Since the max distance is within an acceptable range and we need to keep the vechile moving a at fast past at a later point, it made sense to use the short distance mode. A graph that shows the data I 
           gathered using this mode is shown below:r</p>
-      <p>INSERT GRAPH</p>
-        <img src="images/lab3/sensor_data.png" width="650" height="400" alt="Sensor Data Output">
+        <img src="images for website/lab3/ECE4160_lab3_short_mode.png" width="650" height="400" alt="Sensor Data Output">
     </ul>
     
     <h3>Using Two ToF Sensors</h3>
@@ -90,28 +87,28 @@
     
     <h3>ToF Sensor Speed</h3>
     <ul>
-        <li>Discussed the speed of ToF sensors and limiting factors, such as processing delay and I2C communication.</li>
-        <li>Code snippet for optimizing sensor speed:</li>
-        <pre>
-        while (1) {
-            if (sensor1.dataReady() && sensor2.dataReady()) {
-                distance1 = sensor1.getDistance();
-                distance2 = sensor2.getDistance();
-                sendData(distance1, distance2);
-            }
-        }
-        </pre>
+        <li>When addressing the speed I took out the serial prints and waited for either of the sensors to be ready to send out the data but as you can see in the 
+        picture below there is roughly a 200ms delay between each time the data is gathered. It seems that the limiting factor is how fast both sensor are ready to 
+        collect data.</li>
+         <img src="images for website/lab3/ECE4160_lab3_part9.png" width="650" height="400" alt="Time vs Distance Graph">
     </ul>
+
+     <h3>TOF and IMU being used together</h3>
+    <p>After condcuting the speeds test I moved on to seeing if my code was able to still work while the IMU is connected to teh breakout. After a couple mntes I was
+    able to read data from each device allowing my robot to be able to tell its orienation and how close it is to objects around in a room. Below is a screenshot of the 
+    data coming in from each device.</p>
+    <img src="images for website/lab3/ECE4160_lab3_part10.png" width="650" height="400" alt="All together">
+    
     <h3>Time vs Distance</h3>
     <ul>
         <li>Graph of distance data sent over Bluetooth:</li>
-        <img src="images/lab3/time_vs_distance.png" width="650" height="400" alt="Time vs Distance Graph">
+        <img src="images for website/lab3/ECE4160_lab3_ToF1_TOF2_Time.png" width="650" height="400" alt="Time vs Distance Graph">
     </ul>
     
     <h3>Time vs Angle</h3>
     <ul>
         <li>Graph of angle data sent over Bluetooth:</li>
-        <img src="images/lab3/time_vs_angle.png" width="650" height="400" alt="Time vs Angle Graph">
+        <img src="images for website/lab3/ECE4160_lab3_Pitch_Roll_Time.png" width="650" height="400" alt="Time vs Angle Graph">
     </ul>
 
   <p>NOTE: The IMU and TOF sesnors were not moved when the data was gathered so what you are seeing is just the data of it sitting still.</p>
