@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab 4: Motors and Open Loop Control</title>
+    <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
 </head>
   <nav>
         <ul>
@@ -17,14 +18,25 @@
   </nav>
 <body>
     <h1>Lab 4: Motors and Open Loop Control</h1>
+
+    <h2>Objective</h2>
+    <p>The purpose of this lab is to replace the hardware of the RC car with our own hardware and be able to conduct open loop actions to start the transition to 
+        automonous actions.</p>
     
     <h2>Prelab</h2>
     <h3>Connection Diagram</h3>
     <p>Diagram with intended connections between the motor drivers, Artemis, and battery (including specific pin numbers).</p>
     <img src="diagram.png" alt="Connection Diagram">
+    <p>As can be seen in this diagram I decidced to make pins A0,A1,A2, and A5 the pins used for control. These pins are right next to a row of pins used for ground and 
+    they are close enough to each other that wiring them up was easy. The only issue I faced for using these pins for control is that when using the IDE these pins
+    lose the A prefix and are simply numbers. Ex: A0 -> 0,A1 -> 1,etc. I was not aware of this at first so when I was using the oscilloscope to monitor the PWM signals I was not receiving anything
+    at first. </p>
     
     <h3>Battery Discussion</h3>
-    <p>Discussion on why we power the Artemis and motor drivers from separate batteries.</p>
+    <p>The reason the Artemis and motor drivers are powered from separate batteries is due to current and eletrical noise. The motors require a much higher amount of current
+    to drive them that spliting the current between the 2 motor drivers and the Artemis would most likely cause a lower amount of current to be supplied to the motor drivers.
+    In terms of electrical noise when the componenets are sharing the same power and ground eltrical noise can be induced espically for components like the motors which 
+    are rapidly changing and has voltage and current spikes. </p>
     
     <h2>Lab Tasks</h2>
     
@@ -33,20 +45,28 @@
     <img src="setup.png" alt="Power Supply Setup">
     
     <h3>Power Supply Settings</h3>
-    <p>Discussion on reasonable power supply settings.</p>
+    <p>When deciding on the power supply setting I simply refernced the datasheet of the motor drivers. On page 5 under section 6.3 reconmenned operating conditions I saw
+    that a minium of 2.7 volts were needed to allow the motors to turn. This led me to try this voltage first then increase or deacrese the voltage as needed. I was able to 
+    immediately see that the datasheet was correct that roughly 2.7V was needed to allow the motors to move and anything lower than that does not allow the motors to move.
+    But, you can hear noises from the encoders around 2.5V signaling that a lower volatge can be used to start something with the motor drivers but as stated before to 
+    move the motors roughly 2.7V is needed.</p>
     
     <h3>AnalogWrite Code for Motor Testing</h3>
     <pre><code>
     // Example PWM control for motor driver
-    int motorPin = 9; // Example pin
+    int MotorPin1 = 0;//Controls right side
+    int MotorPin2 = 1;// Controls right side
     void setup() {
-        pinMode(motorPin, OUTPUT);
+         pinMode(MotorPin1,OUTPUT);
+         pinMode(MotorPin2,OUTPUT);
     }
     void loop() {
-        analogWrite(motorPin, 128); // 50% duty cycle
-        delay(2000);
-        analogWrite(motorPin, 0);
-        delay(2000);
+        //This section was to move the right side
+        analogWrite(MotorPin1, 0);
+        analogWrite(MotorPin2, 200);
+        delay(5000);
+        analogWrite(MotorPin1, 0);
+        analogWrite(MotorPin2, 0);
     }
     </code></pre>
     
