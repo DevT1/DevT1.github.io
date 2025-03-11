@@ -1,1 +1,108 @@
-Hi welcome I am using a slip week for this so this page has not been updated fully yet!!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 4: Motors and Open Loop Control</title>
+</head>
+  <nav>
+        <ul>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="lab1.html">Lab 1 Page</a></li>
+            <li><a href="lab2.html">Lab 2 Page</a></li>
+            <li><a href="lab3.html">Lab 3 Page</a></li>
+            <li><a href="lab4.html">Lab 4 Page</a></li>
+            <li><a href="lab5.html">Lab 5 Page</a></li>
+        </ul>
+  </nav>
+<body>
+    <h1>Lab 4: Motors and Open Loop Control</h1>
+    
+    <h2>Prelab</h2>
+    <h3>Connection Diagram</h3>
+    <p>Diagram with intended connections between the motor drivers, Artemis, and battery (including specific pin numbers).</p>
+    <img src="diagram.png" alt="Connection Diagram">
+    
+    <h3>Battery Discussion</h3>
+    <p>Discussion on why we power the Artemis and motor drivers from separate batteries.</p>
+    
+    <h2>Lab Tasks</h2>
+    
+    <h3>Power Supply and Oscilloscope Setup</h3>
+    <p>Picture of setup with power supply and oscilloscope hookup.</p>
+    <img src="setup.png" alt="Power Supply Setup">
+    
+    <h3>Power Supply Settings</h3>
+    <p>Discussion on reasonable power supply settings.</p>
+    
+    <h3>AnalogWrite Code for Motor Testing</h3>
+    <pre><code>
+    // Example PWM control for motor driver
+    int motorPin = 9; // Example pin
+    void setup() {
+        pinMode(motorPin, OUTPUT);
+    }
+    void loop() {
+        analogWrite(motorPin, 128); // 50% duty cycle
+        delay(2000);
+        analogWrite(motorPin, 0);
+        delay(2000);
+    }
+    </code></pre>
+    
+    <h3>Oscilloscope Output</h3>
+    <img src="oscilloscope.png" alt="Oscilloscope Output">
+    
+    <h3>Motor Testing</h3>
+    <p>Short video of wheels spinning as expected.</p>
+    <video controls>
+        <source src="wheels_test.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <pre><code>
+    // Code running during test
+    analogWrite(motorPin, 150);
+    </code></pre>
+    
+    <h3>Battery-Powered Motor Test</h3>
+    <p>Short video of both wheels spinning with battery power.</p>
+    <video controls>
+        <source src="battery_test.mp4" type="video/mp4">
+    </video>
+    
+    <h3>Final Assembly</h3>
+    <p>Picture of all components secured in the car.</p>
+    <img src="car_assembly.png" alt="Final Car Assembly">
+    
+    <h3>Lower Limit PWM Value</h3>
+    <p>Discussion on the lowest PWM value required for movement.</p>
+    
+    <h3>Calibration Demonstration</h3>
+    <p>Video demonstrating calibration and code adjustments.</p>
+    <video controls>
+        <source src="calibration.mp4" type="video/mp4">
+    </video>
+    <pre><code>
+    // Example calibration factor implementation
+    int leftMotorPWM = 150;
+    int rightMotorPWM = 160; // Adjusted for balance
+    </code></pre>
+    
+    <h3>Open Loop Control</h3>
+    <p>Video demonstrating open loop movement.</p>
+    <video controls>
+        <source src="open_loop.mp4" type="video/mp4">
+    </video>
+    <pre><code>
+    // Example open loop movement code
+    void loop() {
+        analogWrite(leftMotorPin, 150);
+        analogWrite(rightMotorPin, 150);
+        delay(2000);
+        analogWrite(leftMotorPin, 0);
+        analogWrite(rightMotorPin, 0);
+    }
+    </code></pre>
+</body>
+</html>
+
