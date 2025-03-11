@@ -91,11 +91,15 @@
     </video>
     
     <h3>Final Assembly</h3>
-    <p>Picture of all components secured in the car.</p>
+    <p>Shown below is a picture of all components secured in the car. I know that the way that the components are currently secured is not ideal but they will be more properly secured
+    at a later date whether it is a time where it is absolutely needed or a time where I have free time.</p>
     <img src="car_assembly.png" alt="Final Car Assembly">
     
     <h3>Lower Limit PWM Value</h3>
-    <p>Discussion on the lowest PWM value required for movement.</p>
+    <p>The lowest PWM value I was able to send to get the motors to move was 75. I think this value is very dependent on the material of the surface the robot is driving on.
+    When I tried that same value on the floor in my house I needed to bump up the value to 100. As will be shown later my calribration factor value did not need to be
+    large. A video later showing the robot moving down a hallway shows that the wheels naturally stayed straight until the end when the right side dominated making the robot move to the left. Through a few trials
+    I found that the calibration value was ____.</p>
     
     <h3>Calibration Demonstration</h3>
     <p>Video demonstrating calibration and code adjustments.</p>
@@ -116,11 +120,26 @@
     <pre><code>
     // Example open loop movement code
     void loop() {
-        analogWrite(leftMotorPin, 150);
-        analogWrite(rightMotorPin, 150);
-        delay(2000);
-        analogWrite(leftMotorPin, 0);
-        analogWrite(rightMotorPin, 0);
+        static int counter = 0;
+        analogWrite(MotorPin1, 0);
+        analogWrite(MotorPin2, 100);
+        analogWrite(MotorPin3, 150);
+        analogWrite(MotorPin4, 0);
+        delay(10);
+        analogWrite(MotorPin1, 0);
+        analogWrite(MotorPin2, 0);
+        analogWrite(MotorPin1, 0);
+        analogWrite(MotorPin2, 0);
+        ++counter;
+
+        if(counter > 300){
+        while(counter > 300){
+            analogWrite(MotorPin1, 0);
+            digitalWrite(MotorPin2, 0);
+            analogWrite(MotorPin3, 0);
+            analogWrite(MotorPin4, 0);
+            delay(5000);
+        } 
     }
     </code></pre>
 </body>
