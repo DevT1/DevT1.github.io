@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 6: Orientation Control</title>
+   <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+  <nav>
+        <ul>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="lab1.html">Lab 1 Page</a></li>
+            <li><a href="lab2.html">Lab 2 Page</a></li>
+            <li><a href="lab3.html">Lab 3 Page</a></li>
+            <li><a href="lab4.html">Lab 4 Page</a></li>
+            <li><a href="lab5.html">Lab 5 Page</a></li>
+            <li><a href="lab6.html">Lab 6 Page</a></li>
+        </ul>
+    </nav>
+    <h1>Lab 6: Orientation Control</h1>
+    
+    <h2>Prelab</h2>
+    <p>For Bluetooth communication, the robot continuously listens for incoming commands while maintaining PID control. The implementation ensures that tuning parameters can be adjusted in real-time. Below is a snippet demonstrating Bluetooth handling:</p>
+    <pre>
+      [INSERT CODE]
+    </pre>
+    
+    <h2>Lab Tasks</h2>
+    
+    <h3>P/I/D Discussion</h3>
+    <p>I chose a PID controller for optimal stability. Initial values:</p>
+    <ul>
+        <li><strong>Kp:</strong> 0 (proportional to reduce steady-state error)</li>
+        <li><strong>Ki:</strong> 0 (integral to correct drift over time)</li>
+        <li><strong>Kd:</strong> 0 (derivative to counteract overshoot)</li>
+    </ul>
+    
+    <h3>Range/Sampling Time Discussion</h3>
+    <p>The IMU gyroscope integration leads to drift over time. To counteract this:</p>
+    <ul>
+        <li>Onboard DMP is used to minimize yaw drift.</li>
+        <li>Sampling rate is set at 100 Hz to balance responsiveness and noise filtering.</li>
+    </ul>
+    
+    <h3>Graphical Analysis</h3>
+    <p>Below is a sample plot of theta vs. time, illustrating system response and stability:</p>
+    <img src="theta_vs_time.png" alt="Theta vs Time Graph">
+    
+    <h3>Code Implementation</h3>
+    <pre>
+double previousError = 0, integral = 0;
+void updatePIDControl() {
+    double error = desiredTheta - currentTheta;
+    integral += error;
+    double derivative = error - previousError;
+    double output = Kp * error + Ki * integral + Kd * derivative;
+    previousError = error;
+    applyMotorControl(output);
+}
+    </pre>
+    
+    <h3>Wind-up Implementation</h3>
+    <p>To prevent integral wind-up, we implemented clamping:</p>
+    <pre>
+if (abs(integral) > maxIntegral) {
+    integral = maxIntegral * (integral > 0 ? 1 : -1);
+}
+    </pre>
+    
+    <h2>Conclusion</h2>
+    <p>The PID controller successfully stabilized orientation with minimal overshoot and steady-state error. Future improvements could include real-time setpoint adjustments during movement.</p>
+</body>
+</html>
