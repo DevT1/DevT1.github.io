@@ -21,11 +21,44 @@
     <h1>PID Control </h1>
 
     <h2>Prelab</h2>
-    <p>For sending and receiving data over Bluetooth, I simply used the notification handler used in pervious labs as well as ....</p>
+    <p>For sending and receiving data over Bluetooth, I simply used the notification handler used in pervious labs.</p>
     
-    <h3>Arduino Code for Bluetooth Communication</h3>
+    <h3>Arduino Code</h3>
     <pre>
-    [INSERT CODE]
+    // Compute error (how far we are from the setpoint)
+      float error = setpoint - distance2;
+    
+      // P-Controller
+      float proportional = Kp * error;
+    
+      // PI-Controller (adds integral term)
+      integral += error * (currTime - prevTime)/50;
+      float integralTerm = Ki * integral;
+    
+      // PID-Controller (adds derivative term)
+      float derivative = (error - prevError) / (currTime - prevTime);
+      float derivativeTerm = Kd * derivative;
+    
+      // Final PID output
+      float output = proportional + integralTerm + derivativeTerm;
+      int speed = constrain(abs(output), 0, 255); // Limit PWM values
+    
+      // Apply scaling factor to the right motor to correct imbalance
+      int rightSpeed = speed * rightMotorScale;
+      int leftSpeed = speed;  // Left motor remains unchanged
+    
+      if (distance2 > setpoint) { 
+        // Move forward
+        analogWrite(MotorPin1, rightSpeed);
+        digitalWrite(MotorPin2, LOW);
+        analogWrite(MotorPin3, leftSpeed);
+        digitalWrite(MotorPin4, LOW);
+      } else { 
+        // Staggered stop: Right motor stops slightly earlier
+        analogWrite(MotorPin1, 0);
+        delay(stopDelay);  // Allow right motor to slow first
+        analogWrite(MotorPin3, 0);
+
     </pre>
 
     <h3>Python Code for Bluetooth Communication</h3>
@@ -44,23 +77,26 @@
     <p>This combination allowed for fast and stable control while avoiding oscillations and overshoot. These values allow for the error to build up making the pwm signal
     to gradually climb and at some point allowing the robot to move. Since it a slow build the robot's speed will be slow and will only increase to a higher speed if the error build up is large enough.
     Since the intergral code is contiously adding error without making this term extremely small the output will quickly become an extremely large number capping out the speed
-    when intially turn on. This lead to many instances of overshooting .</p>
+    when intially turn on. This lead to many instances of overshooting. I did not use a derative term since my code only outputted 0.00 for it. This lead me to believe for my implementaion I did not need it and as seen in a video later that my assupmtion was true.</p>
 
     <h3>Range/Sampling Time Discussion</h3>
     <p>The ToF sensor was set to short range. The PID loop ran at approximately 50 Hz, while the sensor updated at ~10 Hz.</p>
 
     <h3>Graphs</h3>
-    <p>Below are graphs of ToF sensor data vs. time and motor input vs. time.</p>
+    <p>Currently I do not have graphs or pictures due to time constraints. I will add them over the weekend.</p>
     <img src="tof_vs_time.png" alt="ToF Sensor Data vs. Time">
     <img src="motor_vs_time.png" alt="Motor Input vs. Time">
 
     <h3>Videos and Images</h3>
-    <video controls>
-        <source src="experiment.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
+    Down below is a video of what I was able to accomplish with a PI controller. 
+    <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/-42Ij7Dez0Y" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+        </iframe>
     <h3>Discussion</h3>
-    <p>The robot successfully stopped at 1 ft from the wall in multiple trials. Extrapolating ToF data improved reaction time and stability. The main challenges were noise in the derivative term and motor deadband, which were addressed by implementing a low-pass filter and scaling function.</p>
+    <p>The robot successfully stopped at 1 ft from the wall in multiple trials. I will show the extrapolated ToF data later with updated info and analysis. The main challenges were noise in the derivative term and motor deadband, which were addressed by using a scaling/calibration factor.</p>
 </body>
 </html>
