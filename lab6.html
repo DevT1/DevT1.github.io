@@ -50,25 +50,48 @@
     <h3>Code Implementation</h3>
     <pre>
 double previousError = 0, integral = 0;
-void updatePIDControl() {
-    double error = desiredTheta - currentTheta;
-    integral += error;
-    double derivative = error - previousError;
-    double output = Kp * error + Ki * integral + Kd * derivative;
-    previousError = error;
-    applyMotorControl(output);
-}
+myICM.getAGMT();
+
+    // Get yaw from gyroscope integration
+    static float yaw = 0;
+    float dt = (currTime - prevTime) / 1000.0;
+    yaw += myICM.gyrZ() * dt;
+
+    // Compute PID error
+    float error = yaw_setpoint - yaw;
+
+    // If error is zero, stop motors
+    if (abs(error) < 0.25) { 
+        analogWrite(MotorPin1, 0);
+        digitalWrite(MotorPin2, LOW);
+        analogWrite(MotorPin3, 0);
+        digitalWrite(MotorPin4, LOW);
+        return;
+    }
+
+    // Proportional term
+    float proportional = Kp * error;
+
+    // Integral term
+    integral += error * dt;
+    float integralTerm = Ki * integral;
+
+    // Derivative term
+    float derivative = (error - prevError) / dt;
+    float derivativeTerm = Kd * derivative;
+
+    // PID output
+    float output = proportional + integralTerm + derivativeTerm;
+    int motorSpeed = constrain(abs(output), 0, 75);
+
     </pre>
     
     <h3>Wind-up Implementation</h3>
-    <p>To prevent integral wind-up, we implemented clamping:</p>
-    <pre>
-if (abs(integral) > maxIntegral) {
-    integral = maxIntegral * (integral > 0 ? 1 : -1);
-}
+    <p></p>
     </pre>
-    
+
     <h2>Conclusion</h2>
     <p>The PID controller successfully stabilized orientation with minimal overshoot and steady-state error. Future improvements could include real-time setpoint adjustments during movement.</p>
+    <p>NOTE: I am aware that this page will not be completed by the deadline. Lab 5 is missing graphs and videos of progression and lab 6 is missing most of what is required. I will continue to work on 6 and work on 7 at the same time.</p>
 </body>
 </html>
