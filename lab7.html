@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 7: Kalman Filter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 5px;
+            display: block;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lab 7: Kalman Filter</h1>
+    
+    <h2>Objective</h2>
+    <p>The objective of Lab 7 is to implement a Kalman Filter, which will help you execute the behavior from Lab 5 faster. The goal is to use the Kalman Filter to supplement your slowly sampled ToF values, allowing you to speed towards the wall as fast as possible, then either stop 1ft from the wall or turn within 2ft.</p>
+    
+    <h2>Parts Required</h2>
+    <ul>
+        <li>1 x Fully assembled robot with Artemis, ToF sensors, and an IMU.</li>
+        <li>Crash-pillows mounted along the wall for protection.</li>
+    </ul>
+    <p>If practicing at home, ensure similar safety measures.</p>
+    
+    <h2>Lab Procedure</h2>
+    
+    <h3>1. Estimate Drag and Momentum</h3>
+    <ul>
+        <li>Build a state-space model by estimating drag and momentum terms for A and B matrices.</li>
+        <li>Conduct a step response by driving the robot at a constant motor speed while logging input values and ToF sensor output.</li>
+        <li>Choose a step response input (50%-100% of max PWM value).</li>
+        <li>Ensure step time is long enough to reach steady state.</li>
+        <li>Use a foam piece to prevent damage from collisions.</li>
+        <li>Plot and analyze ToF sensor output, speed, and motor input.</li>
+        <li>Measure steady-state speed and rise time (60%-90%).</li>
+        <li>Save data persistently (CSV, pickle, or shelve file).</li>
+    </ul>
+    
+    <h3>2. Initialize Kalman Filter (Python)</h3>
+    <ul>
+        <li>Compute and discretize A and B matrices:</li>
+        <code>Ad = np.eye(n) + Delta_T * A</code>
+        <code>Bd = Delta_T * B</code>
+        <li>Define C matrix (e.g., <code>C = np.array([[-1,0]])</code>).</li>
+        <li>Initialize state vector:</li>
+        <code>x = np.array([[-TOF[0]], [0]])</code>
+        <li>Define noise covariance matrices:</li>
+        <code>sig_u = np.array([[sigma_1**2, 0], [0, sigma_2**2]])</code>
+        <code>sig_z = np.array([[sigma_3**2]])</code>
+    </ul>
+    
+    <h3>3. Implement and Test Kalman Filter</h3>
+    <ul>
+        <li>Implement the Kalman Filter in Jupyter.</li>
+        <li>Import timing, ToF, and PWM data.</li>
+        <li>Format data to ensure equal-length input arrays.</li>
+        <li>Loop through the data and apply the Kalman Filter.</li>
+        <li>Plot the output to analyze filter accuracy.</li>
+        <li>Adjust covariance matrices as needed.</li>
+        <li>Discuss parameter effects on performance.</li>
+    </ul>
+    
+    <h3>Kalman Filter Function</h3>
+    <code>
+    def kf(mu, sigma, u, y):
+        mu_p = A.dot(mu) + B.dot(u) 
+        sigma_p = A.dot(sigma.dot(A.T)) + Sigma_u
+        sigma_m = C.dot(sigma_p.dot(C.T)) + Sigma_z
+        kf_gain = sigma_p.dot(C.T.dot(np.linalg.inv(sigma_m)))
+        y_m = y - C.dot(mu_p)
+        mu = mu_p + kf_gain.dot(y_m)    
+        sigma = (np.eye(2) - kf_gain.dot(C)).dot(sigma_p)
+        return mu, sigma
+    </code>
+</body>
+</html>
