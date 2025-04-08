@@ -16,6 +16,8 @@
             <li><a href="lab4.html">Lab 4 Page</a></li>
             <li><a href="lab5.html">Lab 5 Page</a></li>
             <li><a href="lab6.html">Lab 6 Page</a></li>
+            <li><a href="lab7.html">Lab 7 Page</a></li>
+            <li><a href="lab8.html">Lab 8 Page</a></li>
         </ul>
     </nav>
 <body>
@@ -36,12 +38,12 @@
     <h3>Code</h3>
     <p>My code for this lab is relaively simple compared to the expectation of using the Kalman filter from lab 7. 
       I tried to use my Kalman Filter but I was running into major issues and bugs that I did not iron out in the pervious lab so I opted to use linear extrapolation as its subsitute.
-      It was a simple section of code that kept track of velocity and a predicted distance as seen in this code snippet:
+      It was a simple section of code that kept track of velocity and a predicted distance as seen in this code snippet:</p>
       <code>
         int velocity = currentDistance - lastDistance;
         int predictedDistance = currentDistance + velocity;
       </code>
-      Thus in turn lead to me using:
+      <p>Thus in turn lead to me using:</p>
       <code>
         if(predictedDistance <= 300){
               Serial.println(" Entered drift seq");
@@ -65,8 +67,6 @@
               analogWrite(MotorPin4, 0);
             }
       </code>
-      
-    </p>
 
     <h3>Drift Trials</h3>
     <p>To arrive to this code I had various runs that were massive failures as seen below:</p>
@@ -104,7 +104,7 @@
         </iframe>
   <p>If interested a graph of this run is shown here:</p>
   <img src="images for website/lab 8/distance_vs_time_graph_for_lab 8.png" alt="ToF Data vs. Time">
-  Note: I did not include graphs of the other runs since they were not good enough runs to consitute gathering distance data from them.
+  <p>Note: I did not include graphs of the other runs since they were not good enough runs to consitute gathering distance data from them.</p>
    <h3>Imporvements Needed For Future</h3>
       <li>Implemenation of Kalman Filter</li>
       <li>Use PID controller for smoother control of the spin. This could mean using the orientation and braking section to ensure a good breaking distance and to quickly spin around robot for a more effiecnt drift</li>
