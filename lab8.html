@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 8: Drift Stunt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 5px;
+            display: block;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lab 8: Stunts!</h1>
+    
+    <h2>Objective</h2>
+    <p>The objective of Lab 8 is to be able to conduct one of two stunt. The two stunts we can choose from is a drift of about 3 ft from a wall or object or a flip from that same distance. This lab combines the Kalman filter made in lab 7, the PID controller from lab 5, and the motor design from lab 4 and the TOF sensors from lab 3 to allow our robot to conduct a basic stunt. The stunt I decided to work on was the Drift.</p>
+    
+    <h2>Parts Required</h2>
+    <ul>
+        <li>1 x Fully assembled robot with Artemis, ToF sensors, and an IMU.</li>
+        <li>Crash-pillows mounted along the wall for protection.</li>
+    </ul>
+    <p>When practicing at home, used pillows, empty bookbadgs, and other soft objects to ensure safety of the robot.</p>
+    
+    <h2>Lab Procedure</h2>
+    
+    <h3>Code</h3>
+    <p>My code for this lab is relaively simple compared to the expectation of using the Kalman filter from lab 7. 
+      I tried to use my Kalman Filter but I was running into major issues and bugs that I did not iron out in the pervious lab so I opted to use linear extrapolation as its subsitute.
+      It was a simple section of code that kept track of velocity and a predicted distance as seen in this code snippet:
+      <code>
+        int velocity = currentDistance - lastDistance;
+        int predictedDistance = currentDistance + velocity;
+      </code>
+      Thus in turn lead to me using:
+      <code>
+        if(predictedDistance <= 300){
+              Serial.println(" Entered drift seq");
+              analogWrite(MotorPin1, 250);
+              analogWrite(MotorPin2, 0);
+              analogWrite(MotorPin3, 0);
+              analogWrite(MotorPin4, 255);
+              delay(250);
+
+              
+              analogWrite(MotorPin1, 0);
+              analogWrite(MotorPin2, 0);
+              analogWrite(MotorPin3, 0);
+              analogWrite(MotorPin4, 0);
+              
+            } else{
+              Serial.println(" Entered drive straight seq");
+              analogWrite(MotorPin1, 80);
+              analogWrite(MotorPin2, 0);
+              analogWrite(MotorPin3, 75);
+              analogWrite(MotorPin4, 0);
+            }
+      </code>
+      
+    </p>
+
+    <h3>Drift Trials</h3>
+    <p>To arrive to this code I had various runs that were massive failures as seen below:</p>
+    [INSERT FAILS]
+    <p>In the end I was able to capture a run that although is not perfect shows that the robot can drift and react after an intial drift as seen below:</p>
+    [INSERT decent run]
+  <p>If interested a graph of this run is shown here:</p>
+  [Insert Decent Run Graph]
+  Note: I did not include graphs of the other runs since they were not good enough runs to consitute gathering distance data from them.
+   <h3>Imporvements Needed For Future</h3>
+      <li>Implemenation of Kalman Filter</li>
+      <li>Use PID controller for smoother control of the spin. This could mean using the orientation and braking section to ensure a good breaking distance and to quickly spin around robot for a more effiecnt drift</li>
+    </ul>
+</body>
+</html>
