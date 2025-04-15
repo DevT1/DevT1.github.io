@@ -297,7 +297,7 @@ tof2_y_world = np.array(position1_tof2)[:, 1, 0]
         <div class="placeholder-box">
             <p class="font-semibold mb-2">Merged Scatter Plot of All ToF Readings</p>
             <img src="images for website/lab 9/Scatter Plot.png" alt="Merged scatter plot of all ToF readings from different locations" class="mx-auto">
-            [Comment on the overall appearance. Do walls start to emerge? Are there obvious distortions due to open-loop errors? How well do scans from different locations align?]
+            [Comment on the overall appearance.]
         </div>
         <h3>Line-Based Map Generation</h3>
         <p>
@@ -314,7 +314,7 @@ tof2_y_world = np.array(position1_tof2)[:, 1, 0]
             <li>Assumption of perfect 2D plane (ignoring floor/ceiling variations).</li>
             <li>Simplifications in the Sensor-to-Robot frame transformation (e.g., assuming sensors are exactly at the origin).</li>
         </ul>
-        <p>[Describe any specific errors I noticed and how you compensated for them when drawing the lines. For example: "Points near location X seemed rotated slightly clockwise, likely due to the robot over-turning during the timed increments there. The wall line was drawn based on the average trend."] </p>
+        <p>[Describe any specific errors I noticed and how I compensated for them when drawing the lines.] </p>
 
         <h4>Final Map</h4>
         <div class="placeholder-box">
@@ -339,7 +339,7 @@ map_ends = [
     # ... add all ending points
 ]
         </code></pre>
-        <p>[Replace the placeholder lists above with your actual coordinate data.]</p>
+        <p>[Replace the placeholder lists above with my actual coordinate data.]</p>
         <hr> <h2>Conclusion</h2>
         <p>
             This lab successfully demonstrated the process of creating a 2D map using ToF sensors and an open-loop rotation strategy, with data processing performed in Python. While the open-loop approach allowed for rapid implementation, the resulting map's accuracy, visualized through the Python-generated plots, was clearly limited by the inconsistencies in the timed turns. The transformation process implemented in Python highlighted the importance of accurate robot pose (position and orientation) estimation for merging sensor data correctly.
