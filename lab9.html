@@ -30,31 +30,47 @@
             @apply hover:text-blue-200;
         }
         h1 {
-            @apply text-3xl font-bold text-blue-700 mb-4;
+            @apply text-3xl font-bold text-blue-700 mb-4 border-b pb-2 border-blue-200;
         }
         h2 {
-            @apply text-2xl font-semibold text-blue-600 mt-6 mb-3;
+            /* Made H2 fully bold */
+            @apply text-2xl font-bold text-blue-600 mt-6 mb-4;
         }
         h3 {
-            @apply text-xl font-medium text-blue-500 mt-4 mb-2;
+             /* Made H3 fully bold */
+            @apply text-xl font-bold text-blue-500 mt-4 mb-3;
+        }
+        h4 {
+             /* Made H4 semi-bold */
+             @apply text-lg font-semibold text-gray-700 mt-3 mb-2;
         }
         p, li {
-            @apply text-base leading-relaxed mb-3;
+            @apply text-base leading-relaxed mb-4;
         }
-        ul {
+        ul, ol {
             @apply list-disc list-inside ml-4 mb-4;
+        }
+        ol {
+             @apply list-decimal;
         }
         img, iframe {
             @apply border border-gray-300 rounded-md shadow-sm my-4 max-w-full h-auto;
         }
         pre {
-            @apply bg-gray-200 p-4 rounded-md overflow-x-auto text-sm mb-4;
+            @apply bg-gray-800 text-white p-4 rounded-md overflow-x-auto text-sm my-5 shadow;
         }
-        code.language-python, code.language-cpp { /* Style specific code blocks */
+        code.language-python, code.language-cpp {
             @apply font-mono;
+        }
+        hr {
+             /* Made line break darker */
+             @apply my-8 border-t-2 border-blue-500; /* Changed border-blue-300 to border-blue-500 */
         }
         .container {
             @apply max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 bg-white rounded-lg shadow-lg;
+        }
+        .placeholder-box {
+             @apply bg-gray-200 border border-dashed border-gray-400 p-4 rounded-md text-center text-gray-500 my-4;
         }
     </style>
 </head>
@@ -69,9 +85,7 @@
                 <li><a href="lab9.html">Lab 9 Page</a></li>
             </ul>
         </nav>
-
         <h1>Lab 9: Mapping</h1>
-
         <h2>Objective</h2>
         <p>
             The primary objective of this lab was to create a 2D map of a static environment (e.g., the lab space, a hallway)
@@ -79,23 +93,11 @@
             to rotate in place at several known locations, collecting sensor data during the rotation. This data was then processed
             using Python and merged to generate a representation of the surrounding obstacles.
         </p>
-
-        <h2>Material List</h2>
+        <hr> <h2>Material List</h2>
         <ul>
-            <li>1 x Fully assembled robot</li>
-            <li>1 x SparkFun RedBoard Artemis Nano (or equivalent controller)</li>
-            <li>1 x USB cable</li>
-            <li>1 x 9DOF IMU sensor (ICM-20948)</li>
-            <li>2 x 4m ToF sensors (VL53L1X)</li>
-            <li>1 x QWIIC Breakout board (or direct connections)</li>
-            <li>Appropriate Qwiic connectors or wiring</li>
-            <li>1 x Battery (e.g., 650mAh LiPo)</li>
-            <li>Computer with Arduino IDE, Python (including Matplotlib, NumPy, base_ble), and necessary libraries</li>
-            <li>Measuring tape (for verifying map accuracy)</li>
-            <li>Marked locations in the test environment</li>
+            <li>1 x Fully assembled robot, with Artemis, TOF sensors, and an IMU</li>
         </ul>
-
-        <h2>Approach: Open-Loop Control</h2>
+        <hr> <h2>Approach: Open-Loop Control</h2>
         <p>
             For controlling the robot's rotation during scanning, the open-loop timed turn approach was selected. This method involves
             running the motors for a predetermined duration at a fixed speed to achieve an approximate angular increment between sensor readings.
@@ -103,18 +105,17 @@
         </p>
         <ul>
             <li><strong>Implementation Choice:</strong> Timed incremental turns were used. The robot turns, stops briefly (implicitly, during the delay between motor commands and sensor reading), reads sensors, and repeats.</li>
-            <li><strong>Rationale:</strong> This approach was chosen primarily due to [Explain your reason, e.g., time constraints, difficulties with PID tuning, focus on data processing].</li>
+            <li><strong>Rationale:</strong> This approach was chosen primarily due to time contraints. Still at the current moment I have trying to iron out the issues with my PID controler when it comes to the orienation of the robot.</li>
             <li><strong>Trade-offs:</strong> The main advantage is implementation speed. The major disadvantage is the inherent inaccuracy of the turns. Factors like battery voltage fluctuations, variations in floor friction, and motor inconsistencies directly impact the actual angle turned, leading to non-uniform angular spacing between readings and potential map distortion.</li>
             <li><strong>Tuning:</strong> The duration `MAP_OPEN_LOOP_TURN_DURATION_MS` in the Arduino code required experimental tuning. The value was set to `350` ms based on visual observation aiming for approximately 20-degree increments per step.</li>
         </ul>
-
-        <h2>Lab Tasks</h2>
+        <hr> <h2>Lab Tasks</h2>
 
         <h3>Control Implementation (Open Loop)</h3>
         <p>
             The open-loop control was implemented within the `MAP_ENVIRON` command case in the Arduino firmware. The core logic involves:
         </p>
-        <ol class="list-decimal list-inside ml-4 mb-4">
+        <ol>
             <li>Starting a loop that runs for a maximum number of turns (18) or a time limit.</li>
             <li>Inside the loop, activating the motors to turn the robot in place (e.g., one motor forward, one backward) at `MAP_OPEN_LOOP_TURN_SPEED`.</li>
             <li>Waiting for a fixed duration using `delay(MAP_OPEN_LOOP_TURN_DURATION_MS)`.</li>
@@ -144,27 +145,24 @@ Serial.println("  Turn complete (timed).");
 
         <h4>Turn Performance Documentation</h4>
         <p>
-            [Insert discussion about how well the open-loop turn worked. Did you manually measure the angle? How consistent was it? Mention the tuned duration value again.]
-            Due to the open-loop nature, precise quantification is difficult. Visual inspection suggested turns were roughly [Describe observed angle, e.g., 15-25 degrees] per step.
+            Due to the open-loop nature, precise quantification is difficult. Visual inspection suggested turns were roughly 15-20 degrees per step. The robot was able to consisently be an angle closer to 20 degrees but with the error caused by the human eye and the absence of a protractor leasds to a loose conclusion.
         </p>
         <p><strong>Video of Open-Loop Turn:</strong></p>
-        <div class="bg-gray-200 p-4 rounded-md text-center">
-             [Video Placeholder: Embed or link to a video showing your robot performing the timed turns.]
+        <div class="placeholder-box">
+             [Video Placeholder: Embed or link to a video showing the robot performing the timed turns.]
              </div>
-
         <h3>Data Collection</h3>
         <p>
-            The robot was placed at the following marked locations in the [Specify Environment, e.g., lab room]:
+            The robot was supposed to be placed at various locations in the my room but due to a last minute battery detachment I could not test the robot past the intial spot it was placed in:
         </p>
         <ul>
-            <li>Location 1: [e.g., (-3, -2)] (Note: Ensure these match coordinates used in Python script)</li>
-            <li>Location 2: [e.g., (5, 3)]</li>
-            <li>Location 3: [e.g., (0, 3)]</li>
-            <li>Location 4: [e.g., (5, -3)]</li>
-            <li>[Add more if you used more locations]</li>
+            <li>Location 1: [e.g., (0.5, -0.5)] (Note: Ensure these match coordinates used in Python script)</li>
+            <li>Location 2: [e.g., (0.5, 1)]</li>
+            <li>Location 3: TBD</li>
+            <li>Location 4: TBD</li>
         </ul>
         <p>
-            At each location, the robot was started facing the same initial direction [Specify direction, e.g., towards the positive X-axis].
+            At each location, the robot was started facing the same initial direction facing north towards the windows in my room.
             The `MAP_ENVIRON` command was initiated via Bluetooth using a Python script. This script connected to the robot, sent the command, and registered a notification handler (`map_handler`) to receive the stream of data strings from the Artemis board's `RX_STRING` characteristic.
             The handler parsed the incoming comma-separated strings (containing Timestamp, Distance1, Distance2, Intended Total Angle) and stored the values in Python lists.
         </p>
@@ -224,19 +222,14 @@ plt.title('Polar Plot - Sensor 2 - Location [X,Y]')
 plt.show()
         </code></pre>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-200 p-2 rounded-md text-center">
+            <div class="placeholder-box">
                 <p class="font-semibold mb-2">Polar Plot - Location 1 [e.g., (-3,-2)]</p>
-                <img src="placeholder_polar_loc1.png" alt="Polar plot of ToF readings from Location 1" class="mx-auto">
-                [Briefly comment on whether the plot looks reasonable for that location.]
+                <img src="images for website/lab 9/Polar Plots.png " alt="Polar plot of ToF readings from Location 1" class="mx-auto">
+                This polar plot shows what the robot was able to see in the first spot being tested in my room. The shapes of the polar plots match the real life area where the
+                top plot is a good representation of a small cornerr in my room that has my desk and mini fridge right next to each other. The second plot is a good represenation of what the robot could have seen for the left side of my room.
+                My shoe was near my robot which is the longer straight line in the polar plot and the curve seen in the plot are clutter further away from the robot that could make a curve. 
             </div>
-            <div class="bg-gray-200 p-2 rounded-md text-center">
-                <p class="font-semibold mb-2">Polar Plot - Location 2 [e.g., (5,3)]</p>
-                <img src="placeholder_polar_loc2.png" alt="Polar plot of ToF readings from Location 2" class="mx-auto">
-                 [Briefly comment on whether the plot looks reasonable for that location.]
-           </div>
             </div>
-
-
         <h3>Data Processing & Merging</h3>
         <p>
             To combine the data from all locations into a single map relative to the room's origin, coordinate transformations were required. This was implemented in the Python script using NumPy.
@@ -245,7 +238,7 @@ plt.show()
         <p>
             Two main transformations were needed for each data point:
         </p>
-        <ol class="list-decimal list-inside ml-4 mb-4">
+        <ol>
             <li><strong>Sensor Frame to Robot Frame:</strong> Converts the distance reading into Cartesian coordinates (x, y) relative to the robot's center. The Python script assumes Sensor 1 points forward along the robot's local x-axis and Sensor 2 points backward (negative x-axis).
                 <ul>
                     <li>Sensor 1 (Forward): `tof1_local = [distance1, 0]`</li>
@@ -294,23 +287,23 @@ tof1_y_world = np.array(position1_tof1)[:, 1, 0]
 tof2_x_world = np.array(position1_tof2)[:, 0, 0]
 tof2_y_world = np.array(position1_tof2)[:, 1, 0]
         </code></pre>
-        <p>[Describe your specific sensor mounting positions and initial robot orientation used, confirming they match the assumptions in the Python code (or explain any differences).] </p>
+        <p>[Describe the specific sensor mounting positions and initial robot orientation used, confirming they match the assumptions in the Python code (or explain any differences).] </p>
         <p><strong>Important:</strong> Ensure the `x` and `y` values in the Python script accurately reflect the world coordinates where each scan was performed, matching the locations listed in the Data Collection section.</p>
 
         <h4>Merged Scatter Plot</h4>
         <p>
             After applying the transformations to all valid distance readings from all locations, the resulting world coordinates (x_w, y_w) were plotted together using Matplotlib. Data from each scan location was assigned a different color for clarity, as shown in the final plotting section of the Python script.
         </p>
-        <div class="bg-gray-200 p-4 rounded-md text-center">
+        <div class="placeholder-box">
             <p class="font-semibold mb-2">Merged Scatter Plot of All ToF Readings</p>
-            <img src="placeholder_merged_scatter.png" alt="Merged scatter plot of all ToF readings from different locations" class="mx-auto">
+            <img src="images for website/lab 9/Scatter Plot.png" alt="Merged scatter plot of all ToF readings from different locations" class="mx-auto">
             [Comment on the overall appearance. Do walls start to emerge? Are there obvious distortions due to open-loop errors? How well do scans from different locations align?]
         </div>
-
         <h3>Line-Based Map Generation</h3>
         <p>
             Based on the merged scatter plot, wall segments and major obstacles were manually estimated and drawn as straight lines. This involved visually interpreting the clusters of points and connecting them logically.
         </p>
+        <h4>Error Sources</h4>
         <p>
             Potential sources of error influencing this step include:
         </p>
@@ -321,10 +314,10 @@ tof2_y_world = np.array(position1_tof2)[:, 1, 0]
             <li>Assumption of perfect 2D plane (ignoring floor/ceiling variations).</li>
             <li>Simplifications in the Sensor-to-Robot frame transformation (e.g., assuming sensors are exactly at the origin).</li>
         </ul>
-        <p>[Describe any specific errors you noticed and how you compensated for them when drawing the lines. For example: "Points near location X seemed rotated slightly clockwise, likely due to the robot over-turning during the timed increments there. The wall line was drawn based on the average trend."] </p>
+        <p>[Describe any specific errors I noticed and how you compensated for them when drawing the lines. For example: "Points near location X seemed rotated slightly clockwise, likely due to the robot over-turning during the timed increments there. The wall line was drawn based on the average trend."] </p>
 
         <h4>Final Map</h4>
-        <div class="bg-gray-200 p-4 rounded-md text-center">
+        <div class="placeholder-box">
             <p class="font-semibold mb-2">Final Line-Based Map</p>
             <img src="placeholder_final_map.png" alt="Final map with line segments drawn over scatter plot" class="mx-auto">
         </div>
@@ -347,16 +340,14 @@ map_ends = [
 ]
         </code></pre>
         <p>[Replace the placeholder lists above with your actual coordinate data.]</p>
-
-        <h2>Conclusion</h2>
+        <hr> <h2>Conclusion</h2>
         <p>
             This lab successfully demonstrated the process of creating a 2D map using ToF sensors and an open-loop rotation strategy, with data processing performed in Python. While the open-loop approach allowed for rapid implementation, the resulting map's accuracy, visualized through the Python-generated plots, was clearly limited by the inconsistencies in the timed turns. The transformation process implemented in Python highlighted the importance of accurate robot pose (position and orientation) estimation for merging sensor data correctly.
         </p>
         <p>
             [Discuss specific challenges encountered, e.g., tuning the turn duration, dealing with noisy sensor data, debugging the Python script for transformations, interpreting the scatter plot].
-            The generated line-based map provides a basic representation of the environment but likely contains distortions due to the control method. Future work could significantly improve map quality by implementing PID control (either on orientation or angular velocity) to achieve more consistent and accurate robot rotation during the scanning process, as suggested in the lab description. This would lead to more reliable data for localization and navigation tasks in subsequent labs.
+            The generated line-based map provides a basic representation of the environment but likely contains distortions due to the control method. Future work could significantly improve map quality by using PID control (either on orientation or angular velocity) to achieve more consistent and accurate robot rotation during the scanning process, as suggested in the lab description. This would lead to more reliable data for localization and navigation tasks in subsequent labs.
+            NOTE: MY BATTERY'S WIRES SNAPPED WHILE TESTING SO I COULD NOT POWER THE BOARD TO HAVE A FULLY COMPLETE LAB. I WILL COME BACK TO PLACE THE REST OF THE DATA, COMENTARY, AND GRAPHS.
         </p>
-
-    </div>
-</body>
+        </div> </body>
 </html>
