@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 8: Drift Stunt</title>
+    <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+  <nav>
+        <ul>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="lab1.html">Lab 1 Page</a></li>
+            <li><a href="lab2.html">Lab 2 Page</a></li>
+            <li><a href="lab3.html">Lab 3 Page</a></li>
+            <li><a href="lab4.html">Lab 4 Page</a></li>
+            <li><a href="lab5.html">Lab 5 Page</a></li>
+            <li><a href="lab6.html">Lab 6 Page</a></li>
+            <li><a href="lab7.html">Lab 7 Page</a></li>
+            <li><a href="lab8.html">Lab 8 Page</a></li>
+            <li><a href="lab9.html">Lab 9 Page</a></li>
+            <li><a href="lab10.html">Lab 10 Page</a></li>
+        </ul>
+    </nav>
+
+<body>
+    <h1>Lab 10: Grid Localization using Bayes Filter - Lab Write-up (Procedure)</h1>
+
+    <h2>Lab Procedure Implementation</h2>
+    <p>To perform grid localization using the Bayes filter as outlined in the lab manual, the following steps were undertaken within the provided Jupyter notebook (<code>lab_10_notebook.ipynb</code>):</p>
+
+    <ol>
+        <li><strong>Opened the Jupyter Notebook:</strong> The first step involved navigating to the <code>notebooks</code> directory within the simulation base code and opening the <code>lab_10_notebook.ipynb</code> file. This notebook contained the skeleton code, necessary helper functions, and instructions for implementing the Bayes filter.</li>
+
+        <li><strong>Followed Notebook Instructions:</strong> The subsequent steps involved meticulously following the instructions provided within the notebook. This included implementing the core functions of the Bayes filter: the prediction step and the update step, along with any necessary helper functions like the motion model and sensor model.</li>
+
+        <li><strong>Implemented the Motion Model (<code>odom_motion_model</code>):</strong>
+            <p>As described in the "Odometry Motion Model in the Prediction Step" section of the lab manual, the <code>odom_motion_model</code> function was implemented to calculate the probability of transitioning from a previous robot pose to a current pose given the odometry control input ($u = \begin{pmatrix} \Delta rot_1 & \Delta trans & \Delta rot_2 \end{pmatrix}$). This involved:</p>
+            <ul>
+                <li>Using the <code>compute_control</code> function to determine the actual control input ($actual\_u$) based on the previous and current odometry readings.</li>
+                <li>For each possible transition between grid cells (from a previous state to a current state), calculating the predicted control input ($u_{predicted}$) using <code>compute_control</code>.</li>
+                <li>Utilizing the provided <code>gaussian</code> function to calculate the probability of the actual control input given the predicted control input for rotation 1, translation, and rotation 2, considering the respective noise parameters (<code>loc.odom_rot_sigma</code> and <code>loc.odom_trans_sigma</code>).</li>
+                <li>Multiplying these individual probabilities to obtain the overall transition probability $p(x_t | x_{t-1}, u_t)$.</li>
+            </ul>
+            <p>The implemented (example) code snippet for the motion model is shown below:</p>
+            <div class="code-block">
+                <pre><code>def odom_motion_model(cur_pose, prev_pose, u):
+    u1= compute_control(cur_pose, prev_pose)
+    prob_rot1 = loc.gaussian(u[0], u1[0], loc.odom_rot_sigma)
+    prob_trans = loc.gaussian(u[1], u1[1], loc.odom_trans_sigma)
+    prob_rot2 = loc.gaussian(u[2], u1[2], loc.odom_rot_sigma)
+    prob = prob_rot1 * prob_trans * prob_rot2
+    return prob
+                </code></pre>
+            </div>
+        </li>
+
+        <li><strong>Implemented the Prediction Step (<code>prediction_step</code>):</strong>
+            <p>The <code>prediction_step</code> function was implemented to update the belief state (<code>loc.bel_bar</code>) based on the previous belief (<code>loc.bel</code>) and the odometry motion model. This involved iterating through all possible previous grid cells and all possible current grid cells. For each pair, the probability of transitioning from the previous to the current cell (calculated using <code>odom_motion_model</code> with the actual control input) was multiplied by the probability of being in the previous cell. This product was then added to the probability of being in the current cell in the <code>loc.bel_bar</code>.</p>
+            <p>To optimize computation time, grid cells with a very low probability (below 0.0001) were skipped in the inner loops.</p>
+            <p>The implemented (example) code snippet for the prediction step is shown below:</p>
+            <div class="code-block">
+                <pre><code>def prediction_step(cur_odom, prev_odom):
+    u = compute_control(cur_odom, prev_odom)
+    for x1 in range(mapper.MAX_CELLS_X):
+        for y1 in range(mapper.MAX_CELLS_Y):
+            for a1 in range(mapper.MAX_CELLS_A):
+                bel = loc.bel[x1][y1][a1]
+                if bel >= 0.0001:
+                    for x2 in range(mapper.MAX_CELLS_X):
+                        for y2 in range(mapper.MAX_CELLS_Y):
+                            for a2 in range(mapper.MAX_CELLS_A):
+                                prob = odom_motion_model(mapper.from_map(x2, y2, a2), mapper.from_map(x1, y1, a1), u)
+                                loc.bel_bar[x2][y2][a2] += (prob * bel)
+                </code></pre>
+            </div>
+        </li>
+
+        <li><strong>Implemented the Sensor Model (<code>sensor_model</code>):</strong>
+            <p>The <code>sensor_model</code> function was implemented to calculate the likelihood of the sensor measurements ($z_t$) given a particular robot state ($x_t$). As described, this involved assuming independence of the 18 individual laser range measurements. For each measurement, the <code>gaussian</code> function was used to calculate the likelihood of the observed range (<code>loc.obs_range_data[i]</code>) given the expected range from the map for the current grid cell (obtained using <code>mapper.get_views(x, y, a)</code>) and the sensor noise parameter (<code>loc.sensor_sigma</code>). The function returned an array of these individual likelihoods.</p>
+            <p>The implemented (example) code snippet for the sensor model is shown below:</p>
+            <div class="code-block">
+                <pre><code>def sensor_model(obs):
+    prob_array = np.zeros(mapper.OBS_PER_CELL)
+    for i in range(mapper.OBS_PER_CELL):
+        prob_array[i] = loc.gaussian(loc.obs_range_data[i], obs[i], loc.sensor_sigma)
+    return prob_array
+                </code></pre>
+            </div>
+        </li>
+
+        <li><strong>Implemented the Update Step (<code>update_step</code>):</strong>
+            <p>The <code>update_step</code> function was implemented to update the belief state (<code>loc.bel</code>) based on the prior belief (<code>loc.bel_bar</code>) and the sensor measurements. This involved iterating through all grid cells. For each cell, the likelihood of the sensor measurements given that state (calculated by taking the product of the probabilities returned by <code>sensor_model</code> for the corresponding map readings) was multiplied by the prior belief for that cell. Finally, the belief grid (<code>loc.bel</code>) was normalized to ensure that the sum of probabilities across all cells equals 1, addressing potential arithmetic underflow issues.</p>
+            <p>The implemented (example) code snippet for the update step is shown below:</p>
+            <div class="code-block">
+                <pre><code>def update_step():
+    for x in range(mapper.MAX_CELLS_X):
+        for y in range(mapper.MAX_CELLS_Y):
+            for a in range(mapper.MAX_CELLS_A):
+                prob_z = np.prod(sensor_model(mapper.get_views(x, y, a)))
+                loc.bel[x][y][a] = prob_z * loc.bel_bar[x][y][a]
+    loc.bel = loc.bel / np.sum(loc.bel)
+                </code></pre>
+            </div>
+        </li>
+
+        <li><strong>Executed the Localization Loop:</strong> The notebook provided a loop to simulate the robot's movement and sensor readings over a trajectory. Within this loop, for each time step:
+            <ul>
+                <li>The <code>prediction_step</code> function was called to update the belief based on the robot's movement (odometry).</li>
+                <li>Simulated observation data was obtained using <code>loc.get_observation_data()</code>.</li>
+                <li>The <code>update_step</code> function was called to incorporate the sensor measurements into the belief.</li>
+                <li>The most probable state was tracked and potentially visualized.</li>
+            </ul>
+        </li>
+
+        <li><strong>Normalization:</strong> As highlighted in the "Arithmetic Underflow" tip, the belief grid (<code>loc.bel</code>) was normalized after each update step using <code>loc.bel = loc.bel / np.sum(loc.bel)</code> to prevent probability values from becoming infinitesimally small and to maintain a valid probability distribution.</li>
+
+        <li><strong>Angle Normalization:</strong> The <code>mapper.normalize_angle()</code> function was used within the <code>compute_control</code> function to ensure that calculated angles (rotations) were within the range of [-180, +180) degrees, as specified in the lab manual.</li>
+
+        <li><strong>Computational Efficiency:</strong> Efforts were made to improve computational efficiency by skipping grid cells with very low probabilities in the prediction step, as suggested in the "Computation Time" tips. While the provided code snippets illustrate the core logic, further optimizations using NumPy operations might have been explored for larger-scale simulations.</li>
+    </ol>
+
+    <p>By following these steps and implementing the described functions, the grid localization using the Bayes filter was performed for the sample trajectory within the simulation environment.</p>
+
+</body>
+</html>
