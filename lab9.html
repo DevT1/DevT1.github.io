@@ -4,87 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FastRobots 2025 - Lab 9: Mapping</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            @apply font-sans bg-gray-100 text-gray-800;
-        }
-        nav {
-            @apply bg-blue-600 text-white p-4 rounded-md mb-6 shadow-md;
-        }
-        nav ul {
-            @apply flex space-x-4;
-        }
-        nav a {
-            @apply hover:text-blue-200;
-        }
-        h1 {
-            @apply text-3xl font-bold text-blue-700 mb-4 border-b pb-2 border-blue-200;
-        }
-        h2 {
-            /* Made H2 fully bold */
-            @apply text-2xl font-bold text-blue-600 mt-6 mb-4;
-        }
-        h3 {
-             /* Made H3 fully bold */
-            @apply text-xl font-bold text-blue-500 mt-4 mb-3;
-        }
-        h4 {
-             /* Made H4 semi-bold */
-             @apply text-lg font-semibold text-gray-700 mt-3 mb-2;
-        }
-        p, li {
-            @apply text-base leading-relaxed mb-4;
-        }
-        ul, ol {
-            @apply list-disc list-inside ml-4 mb-4;
-        }
-        ol {
-             @apply list-decimal;
-        }
-        img, iframe {
-            @apply border border-gray-300 rounded-md shadow-sm my-4 max-w-full h-auto;
-        }
-        pre {
-            @apply bg-gray-800 text-white p-4 rounded-md overflow-x-auto text-sm my-5 shadow;
-        }
-        code.language-python, code.language-cpp {
-            @apply font-mono;
-        }
-        hr {
-             /* Made line break darker */
-             @apply my-8 border-t-2 border-blue-500; /* Changed border-blue-300 to border-blue-500 */
-        }
-        .container {
-            @apply max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 bg-white rounded-lg shadow-lg;
-        }
-        .placeholder-box {
-             @apply bg-gray-200 border border-dashed border-gray-400 p-4 rounded-md text-center text-gray-500 my-4;
-        }
-    </style>
-</head>
-<body class="p-4">
-    <div class="container">
-        <nav>
-            <ul>
-                <li><a href="index.html">Home Page</a></li>
-                <li><a href="lab1.html">Lab 1 Page</a></li>
-                <li><a href="lab2.html">Lab 2 Page</a></li>
-                <li><a href="lab3.html">Lab 3 Page</a></li>
-                <li><a href="lab9.html">Lab 9 Page</a></li>
-            </ul>
-        </nav>
+    <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
+<body>
+  <nav>
+        <ul>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="lab1.html">Lab 1 Page</a></li>
+            <li><a href="lab2.html">Lab 2 Page</a></li>
+            <li><a href="lab3.html">Lab 3 Page</a></li>
+            <li><a href="lab4.html">Lab 4 Page</a></li>
+            <li><a href="lab5.html">Lab 5 Page</a></li>
+            <li><a href="lab6.html">Lab 6 Page</a></li>
+            <li><a href="lab7.html">Lab 7 Page</a></li>
+            <li><a href="lab8.html">Lab 8 Page</a></li>
+            <li><a href="lab9.html">Lab 9 Page</a></li>
+        </ul>
+    </nav>
         <h1>Lab 9: Mapping</h1>
         <h2>Objective</h2>
         <p>
@@ -156,10 +91,10 @@ Serial.println("  Turn complete (timed).");
             The robot was supposed to be placed at various locations in the my room but due to a last minute battery detachment I could not test the robot past the intial spot it was placed in:
         </p>
         <ul>
-            <li>Location 1: [e.g., (0.5, -0.5)] (Note: Ensure these match coordinates used in Python script)</li>
-            <li>Location 2: [e.g., (0.5, 1)]</li>
-            <li>Location 3: TBD</li>
-            <li>Location 4: TBD</li>
+            <li>Location 1: (-3, -3)</li>
+            <li>Location 2: (0,3)</li>
+            <li>Location 3: (5,-3)</li>
+            <li>Location 4: (5,3)</li>
         </ul>
         <p>
             At each location, the robot was started facing the same initial direction facing north towards the windows in my room.
@@ -223,16 +158,14 @@ plt.show()
         </code></pre>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="placeholder-box">
-                <p class="font-semibold mb-2">Polar Plot - Location 1 [e.g., (-3,-2)]</p>
+                <p class="font-semibold mb-2">Polar Plot - Location 1</p>
                 <img src="images for website/lab 9/Polar Plots.png " alt="Polar plot of ToF readings from Location 1" class="mx-auto">
-                This polar plot shows what the robot was able to see in the first spot being tested in my room. The shapes of the polar plots match the real life area where the
-                top plot is a good representation of a small cornerr in my room that has my desk and mini fridge right next to each other. The second plot is a good represenation of what the robot could have seen for the left side of my room.
-                My shoe was near my robot which is the longer straight line in the polar plot and the curve seen in the plot are clutter further away from the robot that could make a curve. 
+                This polar plot shows what the robot was able to see in the in one of the marked spots in the map. The reason there is only one plot is becaused the other polar plots looked very similar but had different orientations.
             </div>
             </div>
         <h3>Data Processing & Merging</h3>
         <p>
-            To combine the data from all locations into a single map relative to the room's origin, coordinate transformations were required. This was implemented in the Python script using NumPy.
+            To combine the data from all locations into a single map relative to the room's origin, coordinate transformations were required. This was implemented in the jupyter notebook script using NumPy.
         </p>
         <h4>Transformation Matrices</h4>
         <p>
@@ -287,8 +220,9 @@ tof1_y_world = np.array(position1_tof1)[:, 1, 0]
 tof2_x_world = np.array(position1_tof2)[:, 0, 0]
 tof2_y_world = np.array(position1_tof2)[:, 1, 0]
         </code></pre>
-        <p>[Describe the specific sensor mounting positions and initial robot orientation used, confirming they match the assumptions in the Python code (or explain any differences).] </p>
-        <p><strong>Important:</strong> Ensure the `x` and `y` values in the Python script accurately reflect the world coordinates where each scan was performed, matching the locations listed in the Data Collection section.</p>
+        <p>
+        The sesnors were mounted on the robot by having one TOF sensor at the front of the robot and one TOF sensor at the back of the robot. Also when allowing the robot to turn and spin around the robot was always placed on the floor facing north/parallel to the y axis.
+        </p>
 
         <h4>Merged Scatter Plot</h4>
         <p>
@@ -311,15 +245,14 @@ tof2_y_world = np.array(position1_tof2)[:, 1, 0]
             <li>Inaccurate robot orientation (Theta_R) due to open-loop timed turns, causing rotation/misalignment of scans.</li>
             <li>Inaccurate robot position (X_R, Y_R) if placement wasn't precise, causing translation offsets.</li>
             <li>Sensor noise or erroneous readings (e.g., reflections, readings beyond max range, crosstalk).</li>
-            <li>Assumption of perfect 2D plane (ignoring floor/ceiling variations).</li>
             <li>Simplifications in the Sensor-to-Robot frame transformation (e.g., assuming sensors are exactly at the origin).</li>
         </ul>
-        <p>[Describe any specific errors I noticed and how I compensated for them when drawing the lines.] </p>
+        <p> Due to the friciton of the floor mixed with the intial volatge needing to be sent to the robot to make it move I noticed that not every turn was not 20 degrees but was close. This caused me to sometimes move the robot so that was more accurately a 20 degree turn. Also I noticed that when placing the robot closer to the marked positions the robot struggled more to turn so I placed the robot within the same tile as the marked location but not directly above the tape on the floor. </p>
 
         <h4>Final Map</h4>
         <div class="placeholder-box">
             <p class="font-semibold mb-2">Final Line-Based Map</p>
-            <img src="placeholder_final_map.png" alt="Final map with line segments drawn over scatter plot" class="mx-auto">
+            <img src="images for website/lab 9/Final_Graph.png" alt="Final map with line segments drawn over scatter plot" class="mx-auto">
         </div>
 
         <h4>Map Data (Line Endpoints)</h4>
@@ -339,7 +272,11 @@ map_ends = [
     # ... add all ending points
 ]
         </code></pre>
-        <p>[Replace the placeholder lists above with my actual coordinate data.]</p>
+        <p>Shown below is the plots  at each point of the map.:</p>
+    <img src="images for website/lab 9/Data_at_(-3,-2).png" width="650" height="400" alt="Sensor Data Output">
+    <img src="images for website/lab 9/Data_at_(0,3).png" width="650" height="400" alt="Sensor Data Output">
+    <img src="images for website/lab 9/Data_at_(5,-3).png" width="650" height="400" alt="Sensor Data Output">
+    <img src="images for website/lab 9/Data_at_(5,3).png" width="650" height="400" alt="Sensor Data Output">
         <hr> <h2>Conclusion</h2>
         <p>
             This lab successfully demonstrated the process of creating a 2D map using ToF sensors and an open-loop rotation strategy, with data processing performed in Python. While the open-loop approach allowed for rapid implementation, the resulting map's accuracy, visualized through the Python-generated plots, was clearly limited by the inconsistencies in the timed turns. The transformation process implemented in Python highlighted the importance of accurate robot pose (position and orientation) estimation for merging sensor data correctly.
