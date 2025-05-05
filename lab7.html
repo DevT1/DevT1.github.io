@@ -4,36 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab 7: Kalman Filter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-        }
-        code {
-            background-color: #f4f4f4;
-            padding: 5px;
-            display: block;
-            white-space: pre-wrap;
-        }
-    </style>
+    <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
 </head>
 <body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="lab1.html">Lab 1 Page</a></li>
+            <li><a href="lab2.html">Lab 2 Page</a></li>
+            <li><a href="lab3.html">Lab 3 Page</a></li>
+            <li><a href="lab4.html">Lab 4 Page</a></li>
+            <li><a href="lab5.html">Lab 5 Page</a></li>
+            <li><a href="lab6.html">Lab 6 Page</a></li>
+        </ul>
+    </nav>
     <h1>Lab 7: Kalman Filter</h1>
     
     <h2>Objective</h2>
-    <p>The objective of Lab 7 is to implement a Kalman Filter, which will help you execute the behavior from Lab 5 faster. The goal is to use the Kalman Filter to supplement your slowly sampled ToF values, allowing you to speed towards the wall as fast as possible, then either stop 1ft from the wall or turn within 2ft.</p>
+    <p>Due to the robot moving at rates faster than my TOF sensors can gather data I need implemenet something that can predict potential measurements so that my robot can act accordingly. This lead to the implemenataion of a Kalman filter which can gather potential data at a much faster rate than the TOF sensors.</p>
     
     <h2>Parts Required</h2>
     <ul>
         <li>1 x Fully assembled robot with Artemis, ToF sensors, and an IMU.</li>
         <li>Crash-pillows mounted along the wall for protection.</li>
     </ul>
-    <p>If practicing at home, ensure similar safety measures.</p>
     
     <h2>Lab Procedure</h2>
-    
-    <h3>1. Estimate Drag and Momentum</h3>
+    <p>To fully implement the Kalman Filter I needed to be able to find the drag and momentum of my robot.</p>
+    <h3>Estimating Drag and Momentum</h3>
+    <p>
+        To estimate these two I needed to choose a step response around 50% - 100% of the PWM value I used in Lab 5. Thus I choose the PWM value to be 80 which also was the value used in lecture to explain the filter and the process to create one. 
+        I then placed my robot 7 ft away from a wall and sent my robot towards said wall so that it gave my robot ample time to get a steady state velocity 
+        that can be helpful to implement the filter. After doing this test I was able to gather these graphs that show the PWM value, TOF distance readings, and Velcoity of the robot:
+    </p>
+    <img src="images for website/lab 7/Screenshot 2025-05-02 153854.png" width="650" height="400" alt="PWM vs TIME">
+    <img src="images for website/lab 7/Screenshot 2025-05-02 153936.png" width="650" height="400" alt="DISTANCE vs TIME">
+    <img src="images for website/lab 7/Screenshot 2025-05-02 154005.png" width="650" height="400" alt="VELOCITY vs TIME">
+    <p>
+        From this I found the steady state portion of my veloctiy graph by running thsi portion of code:
+    </p>
+    <code>
+        # Find indices where PWM == 80 and time > 1000 ms
+        steady_indices = [i for i in range(len(time)) if pwm[i] == 80 and time[i] >= 1000]
+        
+        # Extract corresponding steady-state velocities
+        steady_state_portion = [velocity[i] for i in steady_indices]
+        
+        # Compute average steady-state speed
+        if steady_state_portion:
+            Average_speed = sum(steady_state_portion) / len(steady_state_portion)
+            print("Steady-state speed:", Average_speed)
+        else:
+            print("No steady-state portion found.")
+    </code>
+    <p>
+        I then used the average_speed from the steady state portion of the velocity graph to find which was 274.94 ms which was around 0.9 seconds. I then throw those values into the drag and momentum formaulas:
+        
+    </p>
+        [INSERT PIC OF d and m formulas]
+    <p>
+        In the end I found that the drag was 0.0036371321381966503 and the momentum was found to be 0.3908650337129267.
+        This then lead me to be able to create my A and B matrcies from lecture:
+    </p>
+    [INSERT A and B matrices]
+
+    <p>
+        Since matrix C was already given with values inside of it I was able to find A and B discretize them create
+        a state vector and create noise matrices.
+    </p>
+    [INSERT code of creation of A, B, state vetcor, and Covariance matrices]
     <ul>
         <li>Build a state-space model by estimating drag and momentum terms for A and B matrices.</li>
         <li>Conduct a step response by driving the robot at a constant motor speed while logging input values and ToF sensor output.</li>
@@ -43,43 +82,62 @@
         <li>Plot and analyze ToF sensor output, speed, and motor input.</li>
         <li>Measure steady-state speed and rise time (60%-90%).</li>
         <li>Save data persistently (CSV, pickle, or shelve file).</li>
-    </ul>
+    </ul
     
-    <h3>2. Initialize Kalman Filter (Python)</h3>
-    <ul>
-        <li>Compute and discretize A and B matrices:</li>
-        <code>Ad = np.eye(n) + Delta_T * A</code>
-        <code>Bd = Delta_T * B</code>
-        <li>Define C matrix (e.g., <code>C = np.array([[-1,0]])</code>).</li>
-        <li>Initialize state vector:</li>
-        <code>x = np.array([[-TOF[0]], [0]])</code>
-        <li>Define noise covariance matrices:</li>
-        <code>sig_u = np.array([[sigma_1**2, 0], [0, sigma_2**2]])</code>
-        <code>sig_z = np.array([[sigma_3**2]])</code>
-    </ul>
-    
-    <h3>3. Implement and Test Kalman Filter</h3>
-    <ul>
-        <li>Implement the Kalman Filter in Jupyter.</li>
-        <li>Import timing, ToF, and PWM data.</li>
-        <li>Format data to ensure equal-length input arrays.</li>
-        <li>Loop through the data and apply the Kalman Filter.</li>
-        <li>Plot the output to analyze filter accuracy.</li>
-        <li>Adjust covariance matrices as needed.</li>
-        <li>Discuss parameter effects on performance.</li>
-    </ul>
-    
-    <h3>Kalman Filter Function</h3>
+    <h3>2. Implementation of Kalman Filter (Python)</h3>
+    <p>
+        In the end I used the code from lecture to fully implement a Kalman Filter function to gather
+        predicted TOF distance data.
+    </p>
+
     <code>
-    def kf(mu, sigma, u, y):
-        mu_p = A.dot(mu) + B.dot(u) 
-        sigma_p = A.dot(sigma.dot(A.T)) + Sigma_u
-        sigma_m = C.dot(sigma_p.dot(C.T)) + Sigma_z
-        kf_gain = sigma_p.dot(C.T.dot(np.linalg.inv(sigma_m)))
+        def kalman_filter(mu,sigma,u,y):
+        mu_p = A.dot(mu) + B.dot(u)
+        sigma_p = A.dot(sigma.dot(A.transpose())) + sig_u
+        
+        sigma_m = C.dot(sigma_p.dot(C.transpose())) + sig_z
+        kkf_gain = sigma_p.dot(C.transpose().dot(np.linalg.inv(sigma_m)))
+    
         y_m = y - C.dot(mu_p)
-        mu = mu_p + kf_gain.dot(y_m)    
-        sigma = (np.eye(2) - kf_gain.dot(C)).dot(sigma_p)
-        return mu, sigma
+        mu = mu_p + kkf_gain.dot(y_m)
+        sigma = (np.eye(2) - kkf_gain.dot(C)).dot(sigma_p)
+    
+        return mu,sigma
+    </code>
+    
+    <h3>Testing Kalman Filter</h3>
+    <p>
+        Below is the graphs gathered from testing the Kalman Filter with their respected sigmas.
+    </p>
+    <img src="images for website/lab 7/Screenshot 2025-05-02 154033.png" width="650" height="400" alt="PWM vs TIME">
+    <code>
+        sig1 = 40
+        sig2 = 40
+        sig3 = 5
+    </code>
+    <img src="images for website/lab 7/Screenshot 2025-05-02 154401.png" width="650" height="400" alt="DISTANCE vs TIME">
+    <code>
+        sig1 = 20
+        sig2 = 20
+        sig3 = 1
+    </code>
+    <img src="images for website/lab 7/Screenshot 2025-05-02 154459.png" width="650" height="400" alt="VELOCITY vs TIME">
+    <code>
+        sig1 = 30
+        sig2 = 30
+        sig3 = 20
+    </code>
+    <img src="images for website/lab 7/Screenshot 2025-05-02 154651.png" width="650" height="400" alt="PWM vs TIME">
+    <code>
+        sig1 = 20
+        sig2 = 1
+        sig3 = 1
+    </code>
+    <img src="images for website/lab 7/Screenshot 2025-05-02 154841.png" width="650" height="400" alt="DISTANCE vs TIME">
+    <code>
+        sig1 = 1
+        sig2 = 10
+        sig3 = 1
     </code>
 </body>
 </html>
