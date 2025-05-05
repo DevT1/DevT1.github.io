@@ -41,9 +41,9 @@
     <img src="images for website/lab 7/Screenshot 2025-05-02 153936.png" width="650" height="400" alt="DISTANCE vs TIME">
     <img src="images for website/lab 7/Screenshot 2025-05-02 154005.png" width="650" height="400" alt="VELOCITY vs TIME">
     <p>
-        From this I found the steady state portion of my veloctiy graph by running thsi portion of code:
+        From this I found the steady state portion of my veloctiy graph by running this portion of code:
     </p>
-    <code>
+    <pre>
         # Find indices where PWM == 80 and time > 1000 ms
         steady_indices = [i for i in range(len(time)) if pwm[i] == 80 and time[i] >= 1000]
         
@@ -56,41 +56,47 @@
             print("Steady-state speed:", Average_speed)
         else:
             print("No steady-state portion found.")
-    </code>
+    </pre>
     <p>
         I then used the average_speed from the steady state portion of the velocity graph to find which was 274.94 ms which was around 0.9 seconds. I then throw those values into the drag and momentum formaulas:
         
     </p>
-        [INSERT PIC OF d and m formulas]
+        <pre>
+            d=1/Average_speed
+            m=-0.9/np.log(0.1)
+        </pre>
     <p>
         In the end I found that the drag was 0.0036371321381966503 and the momentum was found to be 0.3908650337129267.
         This then lead me to be able to create my A and B matrcies from lecture:
     </p>
-    [INSERT A and B matrices]
 
     <p>
         Since matrix C was already given with values inside of it I was able to find A and B discretize them create
         a state vector and create noise matrices.
     </p>
-    [INSERT code of creation of A, B, state vetcor, and Covariance matrices]
-    <ul>
-        <li>Build a state-space model by estimating drag and momentum terms for A and B matrices.</li>
-        <li>Conduct a step response by driving the robot at a constant motor speed while logging input values and ToF sensor output.</li>
-        <li>Choose a step response input (50%-100% of max PWM value).</li>
-        <li>Ensure step time is long enough to reach steady state.</li>
-        <li>Use a foam piece to prevent damage from collisions.</li>
-        <li>Plot and analyze ToF sensor output, speed, and motor input.</li>
-        <li>Measure steady-state speed and rise time (60%-90%).</li>
-        <li>Save data persistently (CSV, pickle, or shelve file).</li>
-    </ul
+
+    <pre>
+        A = np.array([[0,1],[0,-d/m]])
+        B = np.array([[0], [1/m]])  # shape (2,1)
+        C = np.array([[-1, 0]])  # 2D row vector shape (1,2)
+        dt = time[1] - time[0]
+        Ad = np.eye(2) + dt * A
+        Bd = dt * B
+        x = np.array([[tof2_distance[0]],[0]])
+        sig1 = 1
+        sig2 = 10
+        sig3 = 1
+        sig_u = np.array([[sig1** 2, 0],[0,sig2**2]])
+        sig_z = np.array([[sig3**2]])
+    </pre>
     
-    <h3>2. Implementation of Kalman Filter (Python)</h3>
+    <h3>Implementation of Kalman Filter (Python)</h3>
     <p>
         In the end I used the code from lecture to fully implement a Kalman Filter function to gather
         predicted TOF distance data.
     </p>
 
-    <code>
+    <pre>
         def kalman_filter(mu,sigma,u,y):
         mu_p = A.dot(mu) + B.dot(u)
         sigma_p = A.dot(sigma.dot(A.transpose())) + sig_u
@@ -103,41 +109,41 @@
         sigma = (np.eye(2) - kkf_gain.dot(C)).dot(sigma_p)
     
         return mu,sigma
-    </code>
+    </pre>
     
     <h3>Testing Kalman Filter</h3>
     <p>
         Below is the graphs gathered from testing the Kalman Filter with their respected sigmas.
     </p>
     <img src="images for website/lab 7/Screenshot 2025-05-02 154033.png" width="650" height="400" alt="PWM vs TIME">
-    <code>
+    <pre>
         sig1 = 40
         sig2 = 40
         sig3 = 5
-    </code>
+    </pre>
     <img src="images for website/lab 7/Screenshot 2025-05-02 154401.png" width="650" height="400" alt="DISTANCE vs TIME">
-    <code>
+    <pre>
         sig1 = 20
         sig2 = 20
         sig3 = 1
-    </code>
+    </pre>
     <img src="images for website/lab 7/Screenshot 2025-05-02 154459.png" width="650" height="400" alt="VELOCITY vs TIME">
-    <code>
+    <pre>
         sig1 = 30
         sig2 = 30
         sig3 = 20
-    </code>
+    </pre>
     <img src="images for website/lab 7/Screenshot 2025-05-02 154651.png" width="650" height="400" alt="PWM vs TIME">
-    <code>
+    <pre>
         sig1 = 20
         sig2 = 1
         sig3 = 1
-    </code>
+    </pre>
     <img src="images for website/lab 7/Screenshot 2025-05-02 154841.png" width="650" height="400" alt="DISTANCE vs TIME">
-    <code>
+    <pre>
         sig1 = 1
         sig2 = 10
         sig3 = 1
-    </code>
+    </pre>
 </body>
 </html>
