@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab 11: Localization (REAL)</title>
+    <title> Lab 12: Path Planning and Execution</title>
     <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
 </head>
 <body>
@@ -39,7 +39,7 @@
     All Waypoints on the map
   </h2>
   <p>
-    The order of the waypoints and the waypoints themselves are shown below:
+    The order of the waypoints and the waypoints themselves are shown below as well as the grid/diagram of the pathing:
   </p>
   <ul>
         <li>(-4, -3) &lt;-- start</li>
@@ -52,27 +52,43 @@
         <li>(0, 3)</li>
         <li>(0, 0) &lt;-- end</li>
     </ul>
+    <img src="images for website/lab 12/Screenshot 2025-05-14 163533.png" width="350" height="200" alt="CU CUP Project">
   <h2>
     Map Traversal
   </h2>
     <div class="section problem">
-        <h3>Original Problem</h3>
+         <h3>Orignal Plan to Traverse The Map</h3>
         <p>
-            My codebase suddenly exhibited unexpected behavior, causing all commands to hang midway through execution and resulting in Artemis disconnections, either during or immediately after command execution. This issue rendered my initial PID control function ineffective. Despite extensive troubleshooting efforts, including removing non-PID control code, rewriting the entire codebase within a given .ino file, meticulously reviewing each line of code, and eliminating unnecessary array instantiations that may be consuming memory, the problem persisted.
+            The intial plan to tackle this lab was to use the PID controller from lab 5 and 6 to control the orientation of the robot as it moves
+            and making sure it is a caertain distance away from the walls, and use localization to help with knowing the angle and direction the robot needed to follow.
+            Using these 3 together would result in an effeicient robot that would know where it is currently at where it needs to be change the direction and
+            go the distance needed to the next point.
         </p>
+        <h3>Problems Faced</h3>
+        <p>
+            Unexpected behavior continued to pop up within my code, When I attempted to use my combine my code I my PID controllers were not operating as they were previously and the beliefs I was gathering still continued the same issues as seen in my lab 11.
+            My PID controller for straight line movement was ok but due ot error accumaltion my robot would shoot foward and constantly overshoot the points. My orienation PID controller was causing my robot to constantly spin in circles and have huge oscillations between correcting the robot to move to the right and moving to the left.
+            Finally while testing my localization code at the different waypoints my robots beliefs would be significantly off in the corners.
+            All of these problems would pile on top of each other causing the robot to move violently and rapidly leading me to change my approach.
+        </p>            
     </div>
 
     <div class="section solution">
-        <h3>Revised Path Traversal Plan</h3>
+        <h3> Changed Path Traversal Plan</h3>
         <p>
-            After extensive tweaking, I repurposed my PID control function and streamlined my code by consolidating it into the main loop. I suspected that the code might be hanging during case command execution. The modified PID control function accepts a distance and directs the robot to move forward or backward by the given distance (with very little correction, so distances have to be precise). With this adjustment, I can now program the robot to navigate between waypoints by providing the distances needed to reach each destination.
+            Instead of throwing on multiple layers of closed loop code that was prone to failing I decided that an open loop appraoch would be best. This allows me to quickly elminate errors that would take a very long time to fix and give me more control over
+            the uncertainity of how my robot would react to the map.
         </p>
     </div>
 
     <div class="section">
         <h3>Executing Trajectory</h3>
         <p>
-            To execute the trajectory depicted in the image above (see Grid with waypoints section), a systematic approach is required. With nine distinct waypoints in the image, our trajectory execution algorithm is organized into nine precise steps, each aligned with a specific waypoint. At every step, the robot adheres to a customized sequence of commands designed to advance towards the subsequent waypoint. Key functions for forward and backward motion, derived from our PID control function, alongside orientation control, are indispensable components guiding this process.
+            To execute the trajectory illustrated in the grid (see Grid with Waypoints), I implemented a structured, step-by-step approach that would help me pass through each of the nine designated waypoints. 
+            The trajectory execution logic is broken into 7 sequential phases—each targeting one waypoint. 
+            At each step, the robot follows a tailored sequence of commands to advance toward the next location. 
+            All movement are handled from commands using timining, while orientation adjustments are done as needed since it was clear at times that the robot needed a push due to the friction of the floor or the tape on the wheels gripping the floor. 
+            These components work together to ensure the robot follows the intended path as accurately as possible.
         </p>
     </div>
   <h2>
@@ -133,6 +149,6 @@
   <p>
     When running the trajectory execution code on the robot, I found that while the movement commands were moderately accurate, they lacked precision—often undershooting or overshooting waypoints. 
     Thanks to the flexibility of my code, I was able to refine and retest it directly on the robot without reuploading to the Artemis platform. 
-    This allowed me to conduct over 60 trials, with the featured run being the most successful. Even in that trial, I had to manually adjust the robot’s position at times to ensure it completed certain sequences.
+    This allowed me to conduct over various trials, with the featured run being the most successful. Even in that trial, I had to manually adjust the robot’s position at times to ensure it completed certain sequences.
   </p>
 </body>
