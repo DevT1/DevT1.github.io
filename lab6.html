@@ -21,77 +21,133 @@
     <h1>Lab 6: Orientation Control</h1>
     
     <h2>Prelab</h2>
-    <p>For Bluetooth communication, the robot continuously listens for incoming commands while maintaining PID control. The implementation ensures that tuning parameters can be adjusted in real-time. Below is a snippet demonstrating Bluetooth handling:</p>
-    <pre>
-      [INSERT CODE]
-    </pre>
+    <p>
+        This lab is extremely similar to the previous one. This lab also uses a PID controller to control an aspect of the robot
+        which this time around is the orienatation of the robot. Since this lab is so simialr to the previous one I used a lot of the same code as in the previous one to 
+        handle the robot's reaction to the yaw readings from the gyroscope. 
+    </p>
     
     <h2>Lab Tasks</h2>
-    
+    <p>
+        To begin this report I orginally tried to direclty take in the yaw readings then throw that into my PID 
+        controller but after VARIOUS attempts of trying to make that work I gave up on that plan. This approach caused my robot to spin violently
+        and broke the wires of the battery that connects to the Artemis. This lead me to search other's webpages
+        within my own year and prvious years to see if there was a way to fix my current appoarch or to use an entirely new one altogether. I was able to find that using the IMU's built-in DMP was a popular and meaningful appoarch so I headed down that route.
+    </p>
+    <p>
+        That discussion lead me to follow an example in the Arudino IDE that used the DMP and gather the setup needed to use it. Below is the code needed for the setup of the DMP:
+    </p>
+    <pre>
+        
+          // Initialize the DMP
+        success &= (myICM.initializeDMP() == ICM_20948_Stat_Ok);
+        
+        // Enable the DMP Game Rotation Vector sensor
+        success &= (myICM.enableDMPSensor(INV_ICM20948_SENSOR_GAME_ROTATION_VECTOR) == ICM_20948_Stat_Ok);
+        
+        // Set the DMP output data rate (ODR): value = (DMP running rate / ODR ) - 1
+        // E.g. for a 5Hz ODR rate when DMP is running at 55Hz, value = (55/5) - 1 = 10.
+        success &= (myICM.setDMPODRrate(DMP_ODR_Reg_Quat6, 0) == ICM_20948_Stat_Ok); // Set to the maximum
+        
+        // Enable the FIFO queue
+        success &= (myICM.enableFIFO() == ICM_20948_Stat_Ok);
+        
+        // Enable the DMP
+        success &= (myICM.enableDMP() == ICM_20948_Stat_Ok);
+        
+        // Reset DMP
+        success &= (myICM.resetDMP() == ICM_20948_Stat_Ok);
+        
+        // Reset FIFO
+        success &= (myICM.resetFIFO() == ICM_20948_Stat_Ok);
+        
+        // Check success
+        if (!success) {
+            Serial.println("Enabling DMP failed!");
+            while (1) {
+                // Freeze
+            }
+        }  
+    </pre>
+    <p>
+        NOTE: Before placeing this into your code please pay attention to the note used in the DMP example about uncoomenting out line 29 in the header file.
+        That line allows you to use the DMP and without following that instruction it will never work and allow the code block above to work.
+    </p>
+    <p>
+        After placing that code into my setup() fucntion I placed all of the code needed to convert the DMP measurements in quaternions into Euler angles so that I can gather the measured angle of the yaw for the robot.
+        Below is the code used for that conversion:
+    </p>
+    <pre>
+        if ((myICM.status == ICM_20948_Stat_Ok) || (myICM.status == ICM_20948_Stat_FIFOMoreDataAvail)) {
+            if ((data.header & DMP_header_bitmap_Quat6) > 0) {
+                double qy = ((double)data.Quat6.Data.Q1) / 1073741824.0; // Convert to double. Divide by 2^30
+                double qx = ((double)data.Quat6.Data.Q2) / 1073741824.0; // Convert to double. Divide by 2^30
+                double qz = -((double)data.Quat6.Data.Q3) / 1073741824.0; // Convert to double. Divide by 2^30
+                double qw = sqrt(1.0 - ((qy * qy) + (qx * qx) + (qz* qz)));
+
+                double t3 = +2.0 * (qw * qz + qx * qy);
+                double t4 = +1.0 - 2.0 * (qy * qy + qz * qz);
+                yaw_data = (float)atan2(t3, t4) * 180.0 / PI;
+
+                int error = yaw_setpoint - yaw_data;
+    </pre>
+    <p>From there I used the plogic from lab 5 to create my PID controller but the main difference was that the error was calulated from the 
+    measured yaw not distance.</p>
+    <pre>
+         unsigned long current_time = millis();
+                float dt = (float)(current_time - last_pid_time) / 1000.0;  // Convert ms to
+                last_pid_time = current_time;
+              
+                if (dt > 0) {
+                  accumulated_error += error * dt;
+                }
+              
+                // Calculate P and I terms
+                float p_term = Kp * error;
+                float error_rate = 0.0;
+                if (dt > 0) {
+                  error_rate = (error - prev_error) / dt;
+                }
+                float d_term = Kd * error_rate;
+                float i_term = Ki * accumulated_error;
+                if (i_term > 200) {
+                  i_term = 200;
+                } else if (i_term < -200) {
+                  i_term = -200;
+                }
+              
+                float pwm = p_term + d_term + i_term;
+                prev_error = error;
+              
+                if (pwm > 0 && pwm > 255) {
+                  pwm = 255;
+                } else if (pwm < -255) {
+                  pwm = -255;
+                }
+                
+               // time_data[i] = (int) millis();
+                int e = yaw_setpoint-yaw_data;
+                spin_control(pwm);
+    </pre>
+
+    <p>
+        I added in a new function spin_control and new variable pwm from Kotey's and Akin's webpages since they're code was easier to read and was generally more effiecnt than what I was making.
+    </p>
     <h3>P/I/D Discussion</h3>
-    <p>I chose a PID controller for optimal stability. Initial values:</p>
+    <p>After many trials I was able ot gather these values for each term in the PID controller:</p>
     <ul>
-        <li><strong>Kp:</strong> 0 (proportional to reduce steady-state error)</li>
-        <li><strong>Ki:</strong> 0 (integral to correct drift over time)</li>
-        <li><strong>Kd:</strong> 0 (derivative to counteract overshoot)</li>
-    </ul>
-    
-    <h3>Range/Sampling Time Discussion</h3>
-    <p>The IMU gyroscope integration leads to drift over time. To counteract this:</p>
-    <ul>
-        <li>Onboard DMP is used to minimize yaw drift.</li>
-        <li>Sampling rate is set at 100 Hz to balance responsiveness and noise filtering.</li>
+        <li><strong>Kp:</strong> 2.5</li>
+        <li><strong>Ki:</strong> 0.002</li>
+        <li><strong>Kd:</strong> 0.1</li>
     </ul>
     
     <h3>Graphical Analysis</h3>
     <p>Below is a sample plot of theta vs. time, illustrating system response and stability:</p>
     <img src="theta_vs_time.png" alt="Theta vs Time Graph">
-    
-    <h3>Code Implementation</h3>
-    <pre>
-double previousError = 0, integral = 0;
-myICM.getAGMT();
-
-    // Get yaw from gyroscope integration
-    static float yaw = 0;
-    float dt = (currTime - prevTime) / 1000.0;
-    yaw += myICM.gyrZ() * dt;
-
-    // Compute PID error
-    float error = yaw_setpoint - yaw;
-
-    // If error is zero, stop motors
-    if (abs(error) < 0.25) { 
-        analogWrite(MotorPin1, 0);
-        digitalWrite(MotorPin2, LOW);
-        analogWrite(MotorPin3, 0);
-        digitalWrite(MotorPin4, LOW);
-        return;
-    }
-
-    // Proportional term
-    float proportional = Kp * error;
-
-    // Integral term
-    integral += error * dt;
-    float integralTerm = Ki * integral;
-
-    // Derivative term
-    float derivative = (error - prevError) / dt;
-    float derivativeTerm = Kd * derivative;
-
-    // PID output
-    float output = proportional + integralTerm + derivativeTerm;
-    int motorSpeed = constrain(abs(output), 0, 75);
-
-    </pre>
-    
-    <h3>Wind-up Implementation</h3>
-    <p></p>
-    </pre>
+       
+    <h3>End Product Video</h3>
 
     <h2>Conclusion</h2>
     <p>The PID controller successfully stabilized orientation with minimal overshoot and steady-state error. Future improvements could include real-time setpoint adjustments during movement.</p>
-    <p>NOTE: I am aware that this page will not be completed by the deadline. Lab 5 is missing graphs and videos of progression and lab 6 is missing most of what is required. I will continue to work on 6 and work on 7 at the same time.</p>
 </body>
 </html>
