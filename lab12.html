@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 11: Localization (REAL)</title>
+    <link rel="stylesheet" href="labpagestyles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+   <nav>
+        <ul>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="lab1.html">Lab 1 Page</a></li>
+            <li><a href="lab2.html">Lab 2 Page</a></li>
+            <li><a href="lab3.html">Lab 3 Page</a></li>
+            <li><a href="lab4.html">Lab 4 Page</a></li>
+            <li><a href="lab5.html">Lab 5 Page</a></li>
+            <li><a href="lab6.html">Lab 6 Page</a></li>
+            <li><a href="lab7.html">Lab 7 Page</a></li>
+            <li><a href="lab8.html">Lab 8 Page</a></li>
+            <li><a href="lab9.html">Lab 9 Page</a></li>
+            <li><a href="lab10.html">Lab 10 Page</a></li>
+            <li><a href="lab11.html">Lab 11 Page</a></li>
+            <li><a href="lab12.html">Lab 12 Page</a></li>
+        </ul>
+    </nav>
+  <h1>
+    Lab 12: Path Planning and Execution
+  </h1>
+  <h2>
+    Objective
+  </h2>
+  <p>
+    To conclude this eventful semster I am tasked with navigating the map used in labs 9-11 by any
+    means I want. There are more waypoints on the map/world this time and the task is to cross each one
+    as quickly and as accurately as I can.
+  </p>
+  <h2>
+    All Waypoints on the map
+  </h2>
+  <p>
+    The order of the waypoints and the waypoints themselves are shown below:
+  </p>
+  <ul>
+        <li>(-4, -3) &lt;-- start</li>
+        <li>(-2, -1)</li>
+        <li>(1, -1)</li>
+        <li>(2, -3)</li>
+        <li>(5, -3)</li>
+        <li>(5, -2)</li>
+        <li>(5, 3)</li>
+        <li>(0, 3)</li>
+        <li>(0, 0) &lt;-- end</li>
+    </ul>
+  <h2>
+    Map Traversal
+  </h2>
+    <div class="section problem">
+        <h3>Original Problem</h3>
+        <p>
+            My codebase suddenly exhibited unexpected behavior, causing all commands to hang midway through execution and resulting in Artemis disconnections, either during or immediately after command execution. This issue rendered my initial PID control function ineffective. Despite extensive troubleshooting efforts, including removing non-PID control code, rewriting the entire codebase within a given .ino file, meticulously reviewing each line of code, and eliminating unnecessary array instantiations that may be consuming memory, the problem persisted.
+        </p>
+    </div>
+
+    <div class="section solution">
+        <h3>Revised Path Traversal Plan</h3>
+        <p>
+            After extensive tweaking, I repurposed my PID control function and streamlined my code by consolidating it into the main loop. I suspected that the code might be hanging during case command execution. The modified PID control function accepts a distance and directs the robot to move forward or backward by the given distance (with very little correction, so distances have to be precise). With this adjustment, I can now program the robot to navigate between waypoints by providing the distances needed to reach each destination.
+        </p>
+    </div>
+
+    <div class="section">
+        <h3>Executing Trajectory</h3>
+        <p>
+            To execute the trajectory depicted in the image above (see Grid with waypoints section), a systematic approach is required. With nine distinct waypoints in the image, our trajectory execution algorithm is organized into nine precise steps, each aligned with a specific waypoint. At every step, the robot adheres to a customized sequence of commands designed to advance towards the subsequent waypoint. Key functions for forward and backward motion, derived from our PID control function, alongside orientation control, are indispensable components guiding this process.
+        </p>
+    </div>
+  <h2>
+    Video of Map Traversal
+  </h2>
+  <p>
+    Below is the video of the best run that my robot had with my open-loop appoarch:
+  </p>
+  [INSERT VIDEO]
+  <p>Below this line is the code used to create the path shown in the grid picture shown earlier:</p>
+  <pre>
+    ble.send_command(CMD.MOVEF, "100|1300")
+    time.sleep(4)
+    
+    ble.send_command(CMD.ADJUSTRIGHT, "255|140")
+    time.sleep(4)
+    ble.send_command(CMD.MOVEF, "100|1575")
+    time.sleep(4)
+    
+    ble.send_command(CMD.ADJUSTRIGHT, "255|200")
+    time.sleep(4)
+    ble.send_command(CMD.MOVEF, "100|1270")
+    time.sleep(4)
+    
+    ble.send_command(CMD.ADJUSTLEFT, "255|120")
+    time.sleep(4)
+    ble.send_command(CMD.MOVEF, "100|1530")
+    time.sleep(4)
+    
+    ble.send_command(CMD.ADJUSTLEFT, "255|220")
+    time.sleep(4)
+    ble.send_command(CMD.MOVEF, "100|2500")
+    time.sleep(4)
+    
+    ble.send_command(CMD.ADJUSTLEFT, "255|190")
+    time.sleep(4)
+    ble.send_command(CMD.MOVEF, "100|2100")
+    time.sleep(4)
+    
+    ble.send_command(CMD.ADJUSTLEFT, "255|190")
+    time.sleep(4)
+    ble.send_command(CMD.MOVEF, "100|1300")
+    time.sleep(4)
+  </pre>
+  <p>
+    Each of the commands are reciving the analogWrite value needed to let the robot move at a good pace
+    and the duration of how long it needs to do an action.
+  </p>
+  <h2>
+    Conclusion
+  </h2>
+  <p>
+    When running the trajectory execution code on the robot, I found that while the movement commands were moderately accurate, they lacked precision—often undershooting or overshooting waypoints. 
+    Thanks to the flexibility of my code, I was able to refine and retest it directly on the robot without reuploading to the Artemis platform. 
+    This allowed me to conduct over 60 trials, with the featured run being the most successful. Even in that trial, I had to manually adjust the robot’s position at times to ensure it completed certain sequences.
+  </p>
+</body>
