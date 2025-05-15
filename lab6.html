@@ -32,8 +32,18 @@
         To begin this report I orginally tried to direclty take in the yaw readings then throw that into my PID 
         controller but after VARIOUS attempts of trying to make that work I gave up on that plan. This approach caused my robot to spin violently
         and broke the wires of the battery that connects to the Artemis. This lead me to search other's webpages
-        within my own year and prvious years to see if there was a way to fix my current appoarch or to use an entirely new one altogether. I was able to find that using the IMU's built-in DMP was a popular and meaningful appoarch so I headed down that route.
+        within my own year and prvious years to see if there was a way to fix my current appoarch or to use an entirely new one altogether. 
+        I was able to find that using the IMU's built-in DMP was a popular and meaningful appoarch so I headed down that route. You can see my first attemot with my new PID controller in the video below:
     </p>
+
+     <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/PfghaBOALns?" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+        </iframe>
+    
     <p>
         That discussion lead me to follow an example in the Arudino IDE that used the DMP and gather the setup needed to use it. Below is the code needed for the setup of the DMP:
     </p>
@@ -141,11 +151,21 @@
         <li><strong>Kd:</strong> 0.1</li>
     </ul>
     
-    <h3>Graphical Analysis</h3>
-    <p>Below is a sample plot of theta vs. time, illustrating system response and stability:</p>
-    <img src="theta_vs_time.png" alt="Theta vs Time Graph">
+    <h3>Graphical Analysi</h3>
+    <p>
+        Unfornately graphs were not able to be gathered in time but from the data I gathered from multiple runs and the behavior of the robot you can see clear differences in the way the robot reacted to
+        needing to turn to the apporiate yaw. The first version of the robot was clearly had oscillations in turning left and right and when the robot moved completely out of the range it caused fast spins.
+        When taking the dmp into account more accurate and reliable yaw data so that the robot could better react to the changing direction to the correct angle and orienatation. 
+    </p>
        
     <h3>End Product Video</h3>
+     <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/3IeHwf9bKbw?" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+        </iframe>
 
     <h2>Conclusion</h2>
     <p>The PID controller successfully stabilized orientation with minimal overshoot and steady-state error. Future improvements could include real-time setpoint adjustments during movement.</p>
